@@ -3,7 +3,11 @@ import { userApi } from "./userApi";
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "/api/v1" }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: process.env.REACT_APP_API_URL,
+    credentials: "include",
+    // baseUrl: "/api/v1"
+  }),
   // keepUnusedDataFor: 30,
   endpoints: (builder) => ({
     register: builder.mutation({
