@@ -12,6 +12,9 @@ backend/config/config.env
 frontend/build/
 dist/
 
+stripe/
+
+
 # Logs
 logs
 *.log
