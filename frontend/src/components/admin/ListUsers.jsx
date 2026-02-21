@@ -77,23 +77,41 @@ const ListUsers = () => {
         email: user?.email,
         role: user?.role,
 
+        // actions: (
+        //   <>
+        //     <Link
+        //       to={`/admin/users/${user?._id}`}
+        //       className="btn btn-outline-primary"
+        //     >
+        //       <i className="fa fa-pencil"></i>
+        //     </Link>
+
+        //     <button
+        //       className="btn btn-outline-danger ms-2"
+        //       onClick={() => deleteUserHandler(user?._id)}
+        //       disabled={isDeleteLoading}
+        //     >
+        //       <i className="fa fa-trash"></i>
+        //     </button>
+        //   </>
+        // ),
         actions: (
-          <>
+          <div className="d-flex align-items-center">
             <Link
               to={`/admin/users/${user?._id}`}
-              className="btn btn-outline-primary"
+              className="btn btn-outline-primary btn-sm"
             >
               <i className="fa fa-pencil"></i>
             </Link>
 
             <button
-              className="btn btn-outline-danger ms-2"
+              className="btn btn-outline-danger btn-sm ms-2"
               onClick={() => deleteUserHandler(user?._id)}
               disabled={isDeleteLoading}
             >
               <i className="fa fa-trash"></i>
             </button>
-          </>
+          </div>
         ),
       });
     });
