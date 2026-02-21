@@ -1,15 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { userApi } from "./userApi";
-import { API_BASE_URL } from "../../constants/api";
+// /import { API_BASE_URL } from "../../constants/api";
 
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: API_BASE_URL,
-    credentials: "include",
+    //baseUrl: API_BASE_URL,
+    //credentials: "include",
     //baseUrl: process.env.REACT_APP_API_URL,
     //credentials: "include",
-    // baseUrl: "/api/v1"
+    baseUrl: "/api/v1",
   }),
   // keepUnusedDataFor: 30,
   endpoints: (builder) => ({
