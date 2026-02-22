@@ -65,12 +65,14 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
 //   });
 // });
 export const logout = catchAsyncErrors(async (req, res, next) => {
+  const isProduction = process.env.NODE_ENV === "production";
+
   res.cookie("token", "", {
-    expires: new Date(0), // 🔥 stronger clearing
+    expires: new Date(0), // sets it in the past
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    path: "/", // 🔥 MUST match login
+    secure: isProduction, // match sendToken
+    sameSite: isProduction ? "none" : "lax",
+    path: "/", // must match sendToken
   });
 
   res.status(200).json({
