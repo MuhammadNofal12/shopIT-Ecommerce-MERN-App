@@ -3,13 +3,18 @@ import { setIsAuthenticated, setLoading, setUser } from "../features/userSlice";
 
 //import { API_BASE_URL } from "../../constants/api";
 
+// Use deployed backend URL from .env
+const BASE_URL = process.env.REACT_APP_API_URL;
+
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
     //  baseUrl: API_BASE_URL,
     //  credentials: "include",
     // baseUrl: process.env.REACT_APP_API_URL,
-    baseUrl: "/api/v1",
+    baseUrl: `${BASE_URL}/api/v1`, // prepend API path
+    credentials: "include", // if backend uses cookies
+    //  baseUrl: "/api/v1",
   }),
 
   tagTypes: ["User", "AdminUsers", "AdminUser"],

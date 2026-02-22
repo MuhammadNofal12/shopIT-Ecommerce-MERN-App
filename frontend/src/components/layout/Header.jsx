@@ -81,13 +81,12 @@ const Header = () => {
               className="dropdown-menu w-100"
               aria-labelledby="dropDownMenuButton"
             >
-              {user?.role==="admin" && (
+              {user?.role === "admin" && (
                 <Link className="dropdown-item" to="/admin/dashboard">
-                {" "}
-                Dashboard{" "}
-              </Link>
+                  {" "}
+                  Dashboard{" "}
+                </Link>
               )}
-              
 
               <Link className="dropdown-item" to="/me/orders">
                 {" "}

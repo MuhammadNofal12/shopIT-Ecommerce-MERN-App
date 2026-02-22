@@ -1,13 +1,19 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 //import { API_BASE_URL } from "../../constants/api";
 
+// Use deployed backend URL from .env
+const BASE_URL = process.env.REACT_APP_API_URL;
+
 export const orderApi = createApi({
   reducerPath: "orderApi",
   baseQuery: fetchBaseQuery({
     //baseUrl: API_BASE_URL,
     //credentials: "include",
     //baseUrl: process.env.REACT_APP_API_URL,
-    baseUrl: "/api/v1",
+
+    baseUrl: `${BASE_URL}/api/v1`, // prepend your API path
+    credentials: "include", // if your backend uses cookies
+    //baseUrl: "/api/v1",
   }),
   tagTypes: ["Order", "AdminOrders"],
   // keepUnusedDataFor: 30,
