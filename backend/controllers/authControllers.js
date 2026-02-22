@@ -55,28 +55,12 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
 });
 
 //logout user => /api/v1/logout
-// export const logout = catchAsyncErrors(async (req, res, next) => {
-//   res.cookie("token", null, {
-//     expires: new Date(Date.now()),
-//     httpOnly: true,
-//   });
-//   res.status(200).json({
-//     message: "Logged out",
-//   });
-// });
 export const logout = catchAsyncErrors(async (req, res, next) => {
-  const isProduction = process.env.NODE_ENV === "production";
-
-  res.cookie("token", "", {
-    expires: new Date(0), // sets it in the past
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
     httpOnly: true,
-    secure: isProduction, // match sendToken
-    sameSite: isProduction ? "none" : "lax",
-    path: "/", // must match sendToken
   });
-
   res.status(200).json({
-    success: true,
     message: "Logged out",
   });
 });
