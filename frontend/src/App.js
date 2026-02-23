@@ -9,7 +9,11 @@ import useUserRoutes from "./components/routes/userRoutes";
 import useAdminRoutes from "./components/routes/adminRoutes";
 import NotFound from "./components/layout/NotFound";
 
+import { useGetMeQuery } from "./redux/api/userApi";
+
 function App() {
+  useGetMeQuery(); // 🔥 Initialize user authentication on page load
+
   const userRoutes = useUserRoutes();
   const adminRoutes = useAdminRoutes();
   return (

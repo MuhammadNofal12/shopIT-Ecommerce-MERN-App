@@ -12,7 +12,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const [login, { isLoading, error }] = useLoginMutation();
+  const [login, { isLoading, error, isSuccess }] = useLoginMutation();
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   //   console.log("=========================================");
@@ -20,13 +20,16 @@ const Login = () => {
   //   console.log("=========================================");
 
   useEffect(() => {
+    if (isSuccess) {
+      toast.success("Login successful");
+    }
     if (isAuthenticated) {
       navigate("/");
     }
     if (error) {
       toast.error(error?.data?.message);
     }
-  }, [error, isAuthenticated, navigate]);
+  }, [error, isAuthenticated, navigate, isSuccess]);
 
   const submitHandler = (e) => {
     e.preventDefault();
