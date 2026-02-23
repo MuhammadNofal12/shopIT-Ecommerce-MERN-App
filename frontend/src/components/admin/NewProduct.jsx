@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import Loader from "../layout/Loader";
+//import Loader from "../layout/Loader";
 import { toast } from "react-hot-toast";
 
 import MetaData from "../layout/MetaData";
@@ -37,7 +37,7 @@ const NewProduct = () => {
       toast.success("Product created");
       navigate("/admin/products");
     }
-  }, [error, isSuccess]);
+  }, [error, isSuccess, navigate]);
 
   const onChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });

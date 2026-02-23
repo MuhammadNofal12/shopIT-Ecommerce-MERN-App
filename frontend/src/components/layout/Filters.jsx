@@ -15,7 +15,7 @@ const Filters = () => {
   useEffect(() => {
     searchParams.has("min") && setMin(searchParams.get("min"));
     searchParams.has("max") && setMax(searchParams.get("max"));
-  }, []);
+  }, [searchParams]);
 
   //Handle Category & Ratings filter
   const handleClick = (checkbox) => {

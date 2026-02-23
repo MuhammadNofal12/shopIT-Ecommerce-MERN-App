@@ -3,7 +3,7 @@ import MetaData from "../layout/MetaData";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setCartItem, removeCartItem } from "../../redux/features/cartSlice";
-import toast from "react-hot-toast";
+//import toast from "react-hot-toast";
 
 const Cart = () => {
   const dispatch = useDispatch();

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import Loader from "../layout/Loader";
+//import Loader from "../layout/Loader";
 import { toast } from "react-hot-toast";
 
 import MetaData from "../layout/MetaData";
@@ -10,7 +10,6 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { PRODUCT_CATEGORIES } from "../../constants/constants";
 import {
-  useCreateProductMutation,
   useGetProductDetailsQuery,
   useUpdateProductMutation,
 } from "../../redux/api/productsApi";
@@ -54,7 +53,7 @@ const UpdateProduct = () => {
       toast.success("Product updated");
       navigate("/admin/products");
     }
-  }, [error, isSuccess, data]);
+  }, [error, isSuccess, data, navigate]);
 
   const onChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });

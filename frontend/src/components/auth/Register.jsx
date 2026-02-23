@@ -29,10 +29,14 @@ const Register = () => {
     if (isAuthenticated) {
       navigate("/");
     }
+
+    if (data) {
+      toast.success("Registration successful");
+    }
     if (error) {
       toast.error(error?.data?.message);
     }
-  }, [error, isAuthenticated]);
+  }, [error, isAuthenticated, data, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();

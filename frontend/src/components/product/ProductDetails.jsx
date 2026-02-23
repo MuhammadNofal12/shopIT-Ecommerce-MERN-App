@@ -26,6 +26,7 @@ const ProductDetails = () => {
   const product = data?.product;
 
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const errorMessage = error?.data?.message;
 
   useEffect(() => {
     setActiveImg(
@@ -35,10 +36,10 @@ const ProductDetails = () => {
     );
   }, [product]);
   useEffect(() => {
-    if (isError) {
-      toast.error(error?.data?.message);
+    if (isError && errorMessage) {
+      toast.error(errorMessage);
     }
-  }, [isError]);
+  }, [isError, errorMessage]);
 
   const increaseQty = () => {
     const count = document.querySelector(".count");
@@ -75,7 +76,7 @@ const ProductDetails = () => {
     return <Loader />;
   }
 
-  if (error && error.status == 404) {
+  if (error && error.status === 404) {
     return <NotFound />;
   }
 
@@ -105,16 +106,21 @@ const ProductDetails = () => {
           <div className="row justify-content-start mt-5">
             {product?.images?.map((img) => (
               <div className="col-2 ms-4 mt-2">
-                <a role="button">
+                <button
+                  type="button"
+                  className="border-0 bg-transparent p-0"
+                  onClick={() => setActiveImg(img.url)}
+                >
                   <img
-                    className={`d-block border rounded p-3 cursor-pointer ${img.url === activeImg ? "border-warning" : ""}`}
+                    className={`d-block border rounded p-3 cursor-pointer ${
+                      img.url === activeImg ? "border-warning" : ""
+                    }`}
                     height="100"
                     width="100"
                     src={img?.url}
                     alt={img?.url}
-                    onClick={(e) => setActiveImg(img.url)}
                   />
-                </a>
+                </button>
               </div>
             ))}
           </div>
@@ -145,7 +151,7 @@ const ProductDetails = () => {
               type="number"
               className="form-control count d-inline"
               value={quantity}
-              readonly
+              readOnly
             />
             <span className="btn btn-primary plus" onClick={increaseQty}>
               +

@@ -28,7 +28,7 @@ const ForgotPassword = () => {
     if (isSuccess) {
       toast.success("Email sent. Please check your inbox");
     }
-  }, [error, isAuthenticated, isSuccess]);
+  }, [error, isAuthenticated, isSuccess, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();

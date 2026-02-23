@@ -12,7 +12,7 @@ import MetaData from "../layout/MetaData";
 
 const Dashboard = () => {
   const [startDate, setStartDate] = useState(new Date().setDate(1));
-  
+
   const [endDate, setEndDate] = useState(new Date());
 
   const [getDashboardSales, { error, isLoading, data }] =
@@ -29,7 +29,7 @@ const Dashboard = () => {
         endDate: endDate.toISOString(),
       });
     }
-  }, [error]);
+  }, [error, startDate, endDate, getDashboardSales, data]);
 
   const submitHandler = () => {
     // console.log("=================================");

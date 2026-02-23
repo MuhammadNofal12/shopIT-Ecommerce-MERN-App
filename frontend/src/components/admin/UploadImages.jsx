@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Loader from "../layout/Loader";
+//import Loader from "../layout/Loader";
 import { toast } from "react-hot-toast";
 
 import MetaData from "../layout/MetaData";
@@ -53,7 +53,7 @@ const UploadImages = () => {
       toast.success("Images Uploaded");
       navigate("/admin/products");
     }
-  }, [data, error, isSuccess, deleteError]);
+  }, [data, error, isSuccess, deleteError, navigate]);
 
   const onChange = (e) => {
     const files = Array.from(e.target.files);
@@ -79,7 +79,7 @@ const UploadImages = () => {
   };
 
   const handleImagePreviewDelete = (image) => {
-    const filteredImagesPreview = imagesPreview.filter((img) => img != image);
+    const filteredImagesPreview = imagesPreview.filter((img) => img !== image);
 
     setImages(filteredImagesPreview);
     setImagesPreview(filteredImagesPreview);

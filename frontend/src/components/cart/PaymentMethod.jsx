@@ -33,7 +33,7 @@ const PaymentMethod = () => {
       //   navigate(checkoutData?.url);
     }
     if (checkoutError) {
-      toast.error(error?.data?.message);
+      toast.error(checkoutError?.data?.message);
     }
   }, [checkoutData, checkoutError]);
 
@@ -45,7 +45,7 @@ const PaymentMethod = () => {
     if (isSuccess) {
       navigate("/me/orders?order_success=true");
     }
-  }, [error, isSuccess]);
+  }, [error, isSuccess, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();

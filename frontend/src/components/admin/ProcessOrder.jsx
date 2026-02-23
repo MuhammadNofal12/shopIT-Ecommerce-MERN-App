@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../layout/AdminLayout";
-import Loader from "../layout/Loader";
+//import Loader from "../layout/Loader";
 import { toast } from "react-hot-toast";
-import { MDBDataTable } from "mdbreact";
+//import { MDBDataTable } from "mdbreact";
 import { Link, useParams } from "react-router-dom";
 import MetaData from "../layout/MetaData";
 import {

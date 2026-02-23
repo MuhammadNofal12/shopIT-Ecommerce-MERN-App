@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../layout/AdminLayout";
-import Loader from "../layout/Loader";
+//import Loader from "../layout/Loader";
 import { toast } from "react-hot-toast";
-import { MDBDataTable } from "mdbreact";
-import { Link, useNavigate, useParams } from "react-router-dom";
+//import { MDBDataTable } from "mdbreact";
+import { useNavigate, useParams } from "react-router-dom";
 import MetaData from "../layout/MetaData";
-import { useSelector } from "react-redux";
+//import { useSelector } from "react-redux";
 import {
   useGetUserDetailsQuery,
   useUpdateUserMutation,
@@ -42,7 +42,7 @@ const UpdateUser = () => {
       toast.success("User Updated");
       navigate("/admin/users");
     }
-  }, [error, isSuccess]);
+  }, [error, isSuccess, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
