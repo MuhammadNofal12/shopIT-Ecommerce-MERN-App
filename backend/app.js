@@ -81,7 +81,7 @@ connectDatabase();
 // ✅ CORS setup for both local and production frontend
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://shopit-frontend-qybleltkg-muhammadnofal12s-projects.vercel.app",
+  "https://shop-itecommerce.vercel.app",
 ];
 
 // app.use(
