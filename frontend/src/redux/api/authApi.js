@@ -113,7 +113,7 @@ export const authApi = createApi({
       },
     }),
     logout: builder.mutation({
-      query: () => ({ url: "/logout", method: "GET", credentials: "include" }),
+      query: () => ({ url: "/logout", method: "GET" }),
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
