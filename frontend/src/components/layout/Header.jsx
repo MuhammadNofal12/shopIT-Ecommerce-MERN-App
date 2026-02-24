@@ -134,7 +134,7 @@ import Search from "./Search";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../../redux/api/authApi";
-import { useLazyGetMeQuery, userApi } from "../../redux/api/userApi";
+import { useGetMeQuery, userApi } from "../../redux/api/userApi";
 import {
   setUser,
   setIsAuthenticated,
@@ -150,22 +150,18 @@ const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
 
   const [logout] = useLogoutMutation();
-  const [getMe, { isLoading: meLoading }] = useLazyGetMeQuery();
+  const { data: meData, isLoading: meLoading, isError } = useGetMeQuery();
 
   // Fetch user if not in Redux (on first load)
   useEffect(() => {
-    if (!user) {
-      dispatch(setLoading(true));
-      getMe()
-        .unwrap()
-        .then((data) => {
-          dispatch(setUser(data));
-          dispatch(setIsAuthenticated(true));
-          dispatch(setLoading(false));
-        })
-        .catch(() => dispatch(setLoading(false)));
+    if (meData) {
+      dispatch(setUser(meData));
+      dispatch(setIsAuthenticated(true));
+      dispatch(setLoading(false));
+    } else if (!meLoading) {
+      dispatch(setLoading(false));
     }
-  }, [user, getMe, dispatch]);
+  }, [meData, meLoading, dispatch]);
 
   const logoutHandler = async () => {
     try {
