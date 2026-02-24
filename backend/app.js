@@ -99,7 +99,7 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: "https://shop-itecommerce.vercel.app",
     credentials: true,
   }),
 );
