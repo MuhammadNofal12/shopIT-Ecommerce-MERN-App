@@ -9,13 +9,34 @@ import useUserRoutes from "./components/routes/userRoutes";
 import useAdminRoutes from "./components/routes/adminRoutes";
 import NotFound from "./components/layout/NotFound";
 
-import { useGetMeQuery } from "./redux/api/userApi";
+import { useLazyGetMeQuery } from "./redux/api/userApi";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import {
+  setUser,
+  setIsAuthenticated,
+  setLoading,
+} from "./redux/features/userSlice";
 
 function App() {
-  useGetMeQuery(); // 🔥 Initialize user authentication on page load
+  const dispatch = useDispatch();
+  const [getMe] = useLazyGetMeQuery();
+
+  useEffect(() => {
+    dispatch(setLoading(true));
+    getMe()
+      .unwrap()
+      .then((data) => {
+        dispatch(setUser(data)); // save user in redux
+        dispatch(setIsAuthenticated(true));
+        dispatch(setLoading(false));
+      })
+      .catch(() => dispatch(setLoading(false)));
+  }, [dispatch, getMe]);
 
   const userRoutes = useUserRoutes();
   const adminRoutes = useAdminRoutes();
+
   return (
     <Router>
       <div className="App">
@@ -26,95 +47,6 @@ function App() {
             {userRoutes}
             {adminRoutes}
             <Route path="*" element={<NotFound />} />
-            {/* <Route path="/" element={<Home />} />
-            <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/password/forgot" element={<ForgotPassword />} />
-            <Route path="/password/reset/:token" element={<ResetPassword />} />
-            <Route
-              path="/me/profile"
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/me/update_profile"
-              element={
-                <ProtectedRoute>
-                  <UpdateProfile />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/me/upload_avatar"
-              element={
-                <ProtectedRoute>
-                  <UploadAvatar />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/me/update_password"
-              element={
-                <ProtectedRoute>
-                  <UpdatePassword />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/cart" element={<Cart />} />
-            <Route
-              path="/shipping"
-              element={
-                <ProtectedRoute>
-                  <Shipping />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/confirm_order"
-              element={
-                <ProtectedRoute>
-                  <ConfirmOrder />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/payment_method"
-              element={
-                <ProtectedRoute>
-                  <PaymentMethod />
-                </ProtectedRoute>
-              }
-            />
-             <Route
-              path="/me/orders"
-              element={
-                <ProtectedRoute>
-                  <MyOrders />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/me/order/:id"
-              element={
-                <ProtectedRoute>
-                  <OrderDetails />
-                </ProtectedRoute>
-              }
-            />
-
-             <Route
-              path="/invoice/order/:id"
-              element={
-                <ProtectedRoute>
-                  <Invoice />
-                </ProtectedRoute>
-              }
-            /> */}
           </Routes>
         </div>
         <Footer />

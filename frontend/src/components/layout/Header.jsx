@@ -130,39 +130,42 @@
 // export default Header;
 
 import React, { useEffect } from "react";
-import Search from "./Search";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { useLogoutMutation } from "../../redux/api/authApi";
-import { useGetMeQuery, userApi } from "../../redux/api/userApi";
+import { useLazyGetMeQuery, userApi } from "../../redux/api/userApi";
 import {
   setUser,
   setIsAuthenticated,
   setLoading,
   logoutSuccess,
 } from "../../redux/features/userSlice";
-import toast from "react-hot-toast";
+import Search from "./Search";
 
 const Header = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { user, loading } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
 
   const [logout] = useLogoutMutation();
-  const { data: meData, isLoading: meLoading, isError } = useGetMeQuery();
+  const [getMe, { isLoading: meLoading }] = useLazyGetMeQuery();
 
-  // Fetch user if not in Redux (on first load)
+  // Fetch user if not in Redux (on page load)
   useEffect(() => {
-    if (meData) {
-      dispatch(setUser(meData));
-      dispatch(setIsAuthenticated(true));
-      dispatch(setLoading(false));
-    } else if (!meLoading) {
-      dispatch(setLoading(false));
+    if (!user) {
+      dispatch(setLoading(true));
+      getMe()
+        .unwrap()
+        .then((data) => {
+          dispatch(setUser(data)); // save user in redux
+          dispatch(setIsAuthenticated(true));
+          dispatch(setLoading(false));
+        })
+        .catch(() => dispatch(setLoading(false)));
     }
-  }, [meData, meLoading, dispatch]);
+  }, [user, getMe, dispatch]);
 
   const logoutHandler = async () => {
     try {
@@ -172,12 +175,12 @@ const Header = () => {
       navigate("/");
     } catch (err) {
       console.log(err);
-      toast.error("Logout failed");
     }
   };
 
   return (
     <nav className="navbar row">
+      {/* Logo */}
       <div className="col-12 col-md-3 ps-5">
         <div className="navbar-brand">
           <Link to="/">
@@ -186,26 +189,30 @@ const Header = () => {
         </div>
       </div>
 
+      {/* Search */}
       <div className="col-12 col-md-6 mt-2 mt-md-0">
         <Search />
       </div>
 
+      {/* Cart & User */}
       <div className="col-12 col-md-3 mt-4 mt-md-0 text-center">
         <Link to="/cart" style={{ textDecoration: "none" }}>
           <span id="cart" className="ms-3">
             Cart
           </span>
           <span className="ms-1" id="cart_count">
-            {cartItems?.length}
+            {cartItems?.length || 0}
           </span>
         </Link>
 
+        {/* Show login button if not logged in */}
         {!loading && !meLoading && !user && (
           <Link to="/login" className="btn ms-4" id="login_btn">
             Login
           </Link>
         )}
 
+        {/* Show user dropdown if logged in */}
         {user && (
           <div className="ms-4 dropdown">
             <button
