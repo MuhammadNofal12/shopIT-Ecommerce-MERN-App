@@ -103,13 +103,13 @@
 // export default Login;
 
 //------------------updated----------------------------------------
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLoginMutation } from "../../redux/api/authApi";
 import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
+import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 import MetaData from "../layout/MetaData";
-import { useLoginMutation } from "../../redux/api/authApi";
 import {
   setUser,
   setIsAuthenticated,
@@ -117,42 +117,51 @@ import {
 } from "../../redux/features/userSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { isAuthenticated, loading } = useSelector((state) => state.auth);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const [login, { isLoading, error, isSuccess }] = useLoginMutation();
 
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  // Effect to handle post-login actions
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Login successful!");
+    }
 
-  const [login, { isLoading }] = useLoginMutation();
+    if (isAuthenticated) {
+      navigate("/"); // Redirect home if logged in
+    }
 
-  // Redirect if already logged in
-  if (isAuthenticated) {
-    navigate("/");
-  }
+    if (error) {
+      toast.error(error?.data?.message || "Login failed");
+    }
+  }, [isSuccess, isAuthenticated, error, navigate]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    const loginData = { email, password };
+    dispatch(setLoading(true));
 
     try {
-      dispatch(setLoading(true)); // optional: show loading in Redux
+      const loginData = { email, password };
+      const { data } = await login(loginData).unwrap();
 
-      const { data } = await login(loginData).unwrap(); // unwrap gets actual API response
-
-      // ✅ Update Redux
+      // Update Redux state
       dispatch(setUser(data.user));
       dispatch(setIsAuthenticated(true));
       dispatch(setLoading(false));
 
-      toast.success("Login successful");
+      toast.success("Logged in successfully!");
       navigate("/"); // redirect to home
     } catch (err) {
       dispatch(setLoading(false));
+      toast.error(err?.data?.message || "Invalid email or password");
       console.log(err);
-      toast.error(err?.data?.message || "Login failed");
     }
   };
 
@@ -172,7 +181,6 @@ const Login = () => {
                 type="email"
                 id="email_field"
                 className="form-control"
-                name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -187,30 +195,29 @@ const Login = () => {
                 type="password"
                 id="password_field"
                 className="form-control"
-                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
 
-            <a href="/password/forgot" className="float-end mb-4">
+            <Link to="/password/forgot" className="float-end mb-4">
               Forgot Password?
-            </a>
+            </Link>
 
             <button
               id="login_button"
               type="submit"
               className="btn w-100 py-2"
-              disabled={isLoading}
+              disabled={isLoading || loading}
             >
-              {isLoading ? "Authenticating..." : "LOGIN"}
+              {isLoading || loading ? "Authenticating..." : "LOGIN"}
             </button>
 
             <div className="my-3">
-              <a href="/register" className="float-end">
-                New User?
-              </a>
+              <Link to="/register" className="float-end">
+                New User? Register
+              </Link>
             </div>
           </form>
         </div>

@@ -131,33 +131,31 @@
 
 import React, { useEffect } from "react";
 import Search from "./Search";
-import { useLazyGetMeQuery, userApi } from "../../redux/api/userApi"; // <-- useLazyGetMeQuery
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../../redux/api/authApi";
+import { useLazyGetMeQuery, userApi } from "../../redux/api/userApi";
 import {
-  logoutSuccess,
   setUser,
   setIsAuthenticated,
   setLoading,
+  logoutSuccess,
 } from "../../redux/features/userSlice";
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Lazy query instead of normal query
-  const [getMe, { isLoading: meLoading }] = useLazyGetMeQuery();
-
   const { user, loading } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
 
   const [logout] = useLogoutMutation();
+  const [getMe, { isLoading: meLoading }] = useLazyGetMeQuery();
 
-  // Fetch user on first load if not in Redux
+  // Fetch user if not in Redux (on first load)
   useEffect(() => {
     if (!user) {
-      dispatch(setLoading(true)); // show loader
+      dispatch(setLoading(true));
       getMe()
         .unwrap()
         .then((data) => {
@@ -165,10 +163,7 @@ const Header = () => {
           dispatch(setIsAuthenticated(true));
           dispatch(setLoading(false));
         })
-        .catch((err) => {
-          dispatch(setLoading(false));
-          console.log("Failed to fetch user:", err);
-        });
+        .catch(() => dispatch(setLoading(false)));
     }
   }, [user, getMe, dispatch]);
 
@@ -176,7 +171,7 @@ const Header = () => {
     try {
       await logout().unwrap();
       dispatch(logoutSuccess());
-      dispatch(userApi.util.resetApiState()); // reset RTK cache
+      dispatch(userApi.util.resetApiState());
       navigate("/");
     } catch (err) {
       console.log(err);
@@ -187,9 +182,9 @@ const Header = () => {
     <nav className="navbar row">
       <div className="col-12 col-md-3 ps-5">
         <div className="navbar-brand">
-          <a href="/">
+          <Link to="/">
             <img src="/images/shopit_logo.png" alt="ShopIT Logo" />
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -207,7 +202,13 @@ const Header = () => {
           </span>
         </Link>
 
-        {user ? (
+        {!loading && !meLoading && !user && (
+          <Link to="/login" className="btn ms-4" id="login_btn">
+            Login
+          </Link>
+        )}
+
+        {user && (
           <div className="ms-4 dropdown">
             <button
               className="btn dropdown-toggle text-white"
@@ -225,6 +226,7 @@ const Header = () => {
               </figure>
               <span>{user?.name}</span>
             </button>
+
             <div
               className="dropdown-menu w-100"
               aria-labelledby="dropDownMenuButton"
@@ -248,13 +250,6 @@ const Header = () => {
               </button>
             </div>
           </div>
-        ) : (
-          !loading &&
-          !meLoading && (
-            <Link to="/login" className="btn ms-4" id="login_btn">
-              Login
-            </Link>
-          )
         )}
       </div>
     </nav>
