@@ -102,8 +102,13 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    //origin: "https://shop-itecommerce.vercel.app",
-    origin: "https://shopit-ecommerce-mern.netlify.app",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
