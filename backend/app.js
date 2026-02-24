@@ -83,7 +83,8 @@ connectDatabase();
 // ✅ CORS setup for both local and production frontend
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://shop-itecommerce.vercel.app",
+  "https://shopit-ecommerce-mern.netlify.app",
+  //"https://shop-itecommerce.vercel.app",
 ];
 
 // app.use(
@@ -101,7 +102,8 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: "https://shop-itecommerce.vercel.app",
+    //origin: "https://shop-itecommerce.vercel.app",
+    origin: "https://shopit-ecommerce-mern.netlify.app",
     credentials: true,
   }),
 );
