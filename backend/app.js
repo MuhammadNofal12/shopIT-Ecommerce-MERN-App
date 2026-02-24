@@ -74,6 +74,8 @@ if (process.env.NODE_ENV !== "production") {
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 app.set("query parser", "extended");
 // Connect to DB
 connectDatabase();
