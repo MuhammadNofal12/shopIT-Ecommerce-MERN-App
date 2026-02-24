@@ -113,7 +113,9 @@ export const userApi = createApi({
 
 export const {
   useGetMeQuery,
+  useLazyGetMeQuery,
   useUpdateProfileMutation,
+
   useUploadAvatarMutation,
   useUpdatePasswordMutation,
   useForgotPasswordMutation,
