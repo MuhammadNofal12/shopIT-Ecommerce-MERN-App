@@ -141,6 +141,7 @@ import {
   setLoading,
   logoutSuccess,
 } from "../../redux/features/userSlice";
+import toast from "react-hot-toast";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -171,6 +172,7 @@ const Header = () => {
       navigate("/");
     } catch (err) {
       console.log(err);
+      toast.error("Logout failed");
     }
   };
 

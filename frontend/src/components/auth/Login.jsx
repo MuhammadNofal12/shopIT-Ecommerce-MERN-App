@@ -151,6 +151,12 @@ const Login = () => {
       const loginData = { email, password };
       const { data } = await login(loginData).unwrap();
 
+      if (!data?.user) {
+        toast.error("Login failed: no user returned");
+        dispatch(setLoading(false));
+        return;
+      }
+
       // Update Redux state
       dispatch(setUser(data.user));
       dispatch(setIsAuthenticated(true));
