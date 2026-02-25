@@ -17,6 +17,9 @@ import {
   setIsAuthenticated,
   setLoading,
 } from "./redux/features/userSlice";
+import { API_BASE_URL } from "./constants/api";
+
+console.log("API URL:", API_BASE_URL);
 
 function App() {
   const dispatch = useDispatch();
