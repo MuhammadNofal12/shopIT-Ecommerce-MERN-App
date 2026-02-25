@@ -83,7 +83,8 @@ connectDatabase();
 // ✅ CORS setup for both local and production frontend
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://shopit-ecommerce-mern.netlify.app",
+  process.env.FRONTEND_URL,
+  //"https://shopit-ecommerce-mern.netlify.app",
   //"https://shop-itecommerce.vercel.app",
 ];
 
@@ -136,13 +137,13 @@ app.use("/api/v1", orderRoutes);
 app.use("/api/v1", paymentRoutes);
 
 //connecting backend to frontend
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/build")));
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-  app.get("/*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
-  });
-}
+//   app.get("/*", (req, res) => {
+//     res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
+//   });
+// }
 // Error middleware (ALWAYS last)
 app.use(errorMiddleware);
 

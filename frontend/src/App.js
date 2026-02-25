@@ -31,7 +31,11 @@ function App() {
         dispatch(setIsAuthenticated(true));
         dispatch(setLoading(false));
       })
-      .catch(() => dispatch(setLoading(false)));
+      .catch(() => {
+        dispatch(setUser(null));
+        dispatch(setIsAuthenticated(false));
+        dispatch(setLoading(false));
+      });
   }, [dispatch, getMe]);
 
   const userRoutes = useUserRoutes();

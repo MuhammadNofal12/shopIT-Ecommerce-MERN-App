@@ -145,32 +145,19 @@ const Login = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    dispatch(setLoading(true));
-
     try {
       const loginData = { email, password };
-      const { data } = await login(loginData).unwrap();
+      // Just unwrap the call. The authApi.js 'onQueryStarted'
+      // will handle the setUser and setIsAuthenticated dispatches.
+      await login(loginData).unwrap();
 
-      if (!data?.user) {
-        toast.error("Login failed: no user returned");
-        dispatch(setLoading(false));
-        return;
-      }
-
-      // Update Redux state
-      dispatch(setUser(data.user));
-      dispatch(setIsAuthenticated(true));
-      dispatch(setLoading(false));
-
-      toast.success("Logged in successfully!");
-      navigate("/"); // redirect to home
+      // Success toast is already handled in your useEffect!
+      navigate("/");
     } catch (err) {
-      dispatch(setLoading(false));
-      toast.error(err?.data?.message || "Invalid email or password");
-      console.log(err);
+      // Error toast is also handled in your useEffect!
+      console.error("Login Error:", err);
     }
   };
-
   return (
     <>
       <MetaData title="Login" />
