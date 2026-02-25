@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { clearCart } from "../../redux/features/cartSlice";
 
 const MyOrders = () => {
-  const { data, isLoading, error } = useMyOrdersQuery();
+  const { data, isLoading, error, refetch } = useMyOrdersQuery(); // ✅ added refetch
 
   const [searchParams] = useSearchParams();
 
@@ -23,10 +23,21 @@ const MyOrders = () => {
       toast.error(error?.data?.message);
     }
     if (orderSuccess) {
+      // ✅ Clear the cart if payment was successful
       dispatch(clearCart());
-      navigate("/me/orders");
+
+      // ✅ Refetch the orders so Stripe payments appear immediately
+      refetch();
+
+      // ✅ Remove query param from URL without reload
+      navigate("/me/orders", { replace: true });
     }
-  }, [error, orderSuccess, dispatch, navigate]);
+  }, [error, orderSuccess, dispatch, navigate, refetch]); // ✅ added refetch in dependency
+  //   if (orderSuccess) {
+  //     dispatch(clearCart());
+  //     navigate("/me/orders");
+  //   }
+  // }, [error, orderSuccess, dispatch, navigate]);
 
   const setOrders = () => {
     const orders = {
