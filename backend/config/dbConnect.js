@@ -33,7 +33,7 @@ export const connectDatabase = async () => {
 
     if (env === "DEVELOPMENT") {
       DB_URI = process.env.DB_LOCAL_URI;
-    } else if (env === "PRODUCTION") {
+    } else if (env === "production") {
       DB_URI = process.env.DB_URI;
     }
 
@@ -53,7 +53,6 @@ export const connectDatabase = async () => {
     process.exit(1);
   }
 };
-
 
 // import mongoose from "mongoose";
 

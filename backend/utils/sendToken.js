@@ -27,8 +27,8 @@ const sendToken = (user, statusCode, res) => {
   const options = {
     httpOnly: true,
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-    secure: process.env.NODE_ENV === "production", // HTTPS only in prod
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-domain
+    secure: true,
+    sameSite: "none",
     path: "/", // required for logout
   };
 
