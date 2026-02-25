@@ -122,6 +122,8 @@ export const authApi = createApi({
           dispatch(setUser(null));
           dispatch(setIsAuthenticated(false));
           dispatch(setLoading(false));
+
+          dispatch(authApi.util.resetApiState());
         } catch (error) {
           console.log(error);
         }
