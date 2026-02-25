@@ -59,7 +59,7 @@ import paymentRoutes from "./routes/payment.js";
 // --------------------
 // Load Environment Variables (ALWAYS LOAD)
 // --------------------
-dotenv.config({ path: "backend/config/config.env" });
+dotenv.config();
 
 // --------------------
 // Handle Uncaught Exceptions
@@ -80,6 +80,7 @@ app.set("query parser", "extended");
 // --------------------
 // Connect Database
 // --------------------
+console.log("DB_URI:", process.env.DB_URI);
 connectDatabase();
 
 // --------------------
