@@ -22,21 +22,32 @@ function App() {
   const dispatch = useDispatch();
   const [getMe] = useLazyGetMeQuery();
 
+  // App.js
   useEffect(() => {
+    let isMounted = true; // Prevents state updates on unmounted components
+
     dispatch(setLoading(true));
     getMe()
       .unwrap()
       .then((data) => {
-        dispatch(setUser(data)); // save user in redux
-        dispatch(setIsAuthenticated(true));
-        dispatch(setLoading(false));
+        if (isMounted) {
+          dispatch(setUser(data));
+          dispatch(setIsAuthenticated(true));
+          dispatch(setLoading(false));
+        }
       })
-      .catch(() => {
-        dispatch(setUser(null));
-        dispatch(setIsAuthenticated(false));
-        dispatch(setLoading(false));
+      .catch((err) => {
+        if (isMounted) {
+          dispatch(setLoading(false));
+          dispatch(setIsAuthenticated(false));
+          dispatch(setUser(null));
+        }
       });
-  }, [dispatch, getMe]);
+
+    return () => {
+      isMounted = false;
+    }; // Cleanup
+  }, [getMe, dispatch]);
 
   const userRoutes = useUserRoutes();
   const adminRoutes = useAdminRoutes();

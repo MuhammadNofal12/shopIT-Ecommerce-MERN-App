@@ -206,7 +206,14 @@ const Header = () => {
         </Link>
 
         {/* Show login button if not logged in */}
-        {!loading && !meLoading && !user && (
+        {/* {!loading && !meLoading && !user && (
+          <Link to="/login" className="btn ms-4" id="login_btn">
+            Login
+          </Link>
+        )} */}
+
+        {/* Show login button if user is not present and global loading is over */}
+        {!loading && !user && (
           <Link to="/login" className="btn ms-4" id="login_btn">
             Login
           </Link>
