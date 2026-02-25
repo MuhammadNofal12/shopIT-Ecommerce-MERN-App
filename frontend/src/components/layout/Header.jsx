@@ -1,226 +1,61 @@
-// import React from "react";
-// import Search from "./Search";
-// import { useGetMeQuery, userApi } from "../../redux/api/userApi";
-// import { useDispatch, useSelector } from "react-redux";
-// import { Link, useNavigate } from "react-router-dom";
-// import { useLogoutMutation } from "../../redux/api/authApi";
-// import { logoutSuccess } from "../../redux/features/userSlice";
-
-// const Header = () => {
-//   const navigate = useNavigate();
-//   const { isLoading } = useGetMeQuery();
-//   const [logout] = useLogoutMutation();
-//   // console.log("===================================");
-//   // console.log("LOGOUT=>", data);
-//   // console.log("===================================");
-
-//   const { user } = useSelector((state) => state.auth);
-
-//   const { cartItems } = useSelector((state) => state.cart);
-
-//   const dispatch = useDispatch();
-
-//   const logoutHandler = async () => {
-//     try {
-//       await logout().unwrap();
-//       dispatch(logoutSuccess());
-
-//       // Reset RTK Query cache
-//       dispatch(userApi.util.resetApiState());
-
-//       navigate("/");
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   };
-//   return (
-//     <nav className="navbar row">
-//       <div className="col-12 col-md-3 ps-5">
-//         <div className="navbar-brand">
-//           <a href="/">
-//             <img src="/images/shopit_logo.png" alt="ShopIT Logo" />
-//           </a>
-//         </div>
-//       </div>
-//       <div className="col-12 col-md-6 mt-2 mt-md-0">
-//         <Search />
-//       </div>
-//       <div className="col-12 col-md-3 mt-4 mt-md-0 text-center">
-//         <a href="/cart" style={{ textDecoration: "none" }}>
-//           <span id="cart" className="ms-3">
-//             {" "}
-//             Cart{" "}
-//           </span>
-//           <span className="ms-1" id="cart_count">
-//             {cartItems?.length}
-//           </span>
-//         </a>
-//         {user ? (
-//           <div className="ms-4 dropdown">
-//             <button
-//               className="btn dropdown-toggle text-white"
-//               type="button"
-//               id="dropDownMenuButton"
-//               data-bs-toggle="dropdown"
-//               aria-expanded="false"
-//             >
-//               <figure className="avatar avatar-nav">
-//                 <img
-//                   src={
-//                     user?.avatar
-//                       ? user?.avatar?.url
-//                       : "/images/default_avatar.jpg"
-//                   }
-//                   alt="User Avatar"
-//                   className="rounded-circle"
-//                 />
-//               </figure>
-//               <span>{user?.name}</span>
-//             </button>
-//             <div
-//               className="dropdown-menu w-100"
-//               aria-labelledby="dropDownMenuButton"
-//             >
-//               {user?.role === "admin" && (
-//                 <Link className="dropdown-item" to="/admin/dashboard">
-//                   {" "}
-//                   Dashboard{" "}
-//                 </Link>
-//               )}
-
-//               <Link className="dropdown-item" to="/me/orders">
-//                 {" "}
-//                 Orders{" "}
-//               </Link>
-
-//               <Link className="dropdown-item" to="/me/profile">
-//                 {" "}
-//                 Profile{" "}
-//               </Link>
-
-//               {/* <Link
-//                 className="dropdown-item text-danger"
-//                 to="/"
-//                 onClick={logoutHandler}
-//               >
-//                 {" "}
-//                 Logout{" "}
-//               </Link> */}
-//               <button
-//                 className="dropdown-item text-danger"
-//                 onClick={logoutHandler}
-//               >
-//                 Logout
-//               </button>
-//             </div>
-//           </div>
-//         ) : (
-//           !isLoading && (
-//             <Link to="/login" className="btn ms-4" id="login_btn">
-//               {" "}
-//               Login{" "}
-//             </Link>
-//           )
-//         )}
-//       </div>
-//     </nav>
-//   );
-// };
-
-// export default Header;
-
-import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useLogoutMutation } from "../../redux/api/authApi";
-import { useLazyGetMeQuery, userApi } from "../../redux/api/userApi";
-import {
-  setUser,
-  setIsAuthenticated,
-  setLoading,
-  logoutSuccess,
-} from "../../redux/features/userSlice";
+import React from "react";
 import Search from "./Search";
+import { useGetMeQuery, userApi } from "../../redux/api/userApi";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useLogoutMutation } from "../../redux/api/authApi";
+import { logoutSuccess } from "../../redux/features/userSlice";
 
 const Header = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { isLoading } = useGetMeQuery();
+  const [logout] = useLogoutMutation();
+  // console.log("===================================");
+  // console.log("LOGOUT=>", data);
+  // console.log("===================================");
 
-  const { user, loading } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
+
   const { cartItems } = useSelector((state) => state.cart);
 
-  const [logout] = useLogoutMutation();
-  const [getMe, { isLoading: meLoading }] = useLazyGetMeQuery();
-
-  // Fetch user if not in Redux (on page load)
-  useEffect(() => {
-    if (!user) {
-      dispatch(setLoading(true));
-      getMe()
-        .unwrap()
-        .then((data) => {
-          dispatch(setUser(data)); // save user in redux
-          dispatch(setIsAuthenticated(true));
-          dispatch(setLoading(false));
-        })
-        .catch(() => dispatch(setLoading(false)));
-    }
-  }, [user, getMe, dispatch]);
+  const dispatch = useDispatch();
 
   const logoutHandler = async () => {
     try {
       await logout().unwrap();
       dispatch(logoutSuccess());
+
+      // Reset RTK Query cache
       dispatch(userApi.util.resetApiState());
+
       navigate("/");
     } catch (err) {
       console.log(err);
     }
   };
-
   return (
     <nav className="navbar row">
-      {/* Logo */}
       <div className="col-12 col-md-3 ps-5">
         <div className="navbar-brand">
-          <Link to="/">
+          <a href="/">
             <img src="/images/shopit_logo.png" alt="ShopIT Logo" />
-          </Link>
+          </a>
         </div>
       </div>
-
-      {/* Search */}
       <div className="col-12 col-md-6 mt-2 mt-md-0">
         <Search />
       </div>
-
-      {/* Cart & User */}
       <div className="col-12 col-md-3 mt-4 mt-md-0 text-center">
-        <Link to="/cart" style={{ textDecoration: "none" }}>
+        <a href="/cart" style={{ textDecoration: "none" }}>
           <span id="cart" className="ms-3">
-            Cart
+            {" "}
+            Cart{" "}
           </span>
           <span className="ms-1" id="cart_count">
-            {cartItems?.length || 0}
+            {cartItems?.length}
           </span>
-        </Link>
-
-        {/* Show login button if not logged in */}
-        {/* {!loading && !meLoading && !user && (
-          <Link to="/login" className="btn ms-4" id="login_btn">
-            Login
-          </Link>
-        )} */}
-
-        {/* Show login button if user is not present and global loading is over */}
-        {!loading && !user && (
-          <Link to="/login" className="btn ms-4" id="login_btn">
-            Login
-          </Link>
-        )}
-
-        {/* Show user dropdown if logged in */}
-        {user && (
+        </a>
+        {user ? (
           <div className="ms-4 dropdown">
             <button
               className="btn dropdown-toggle text-white"
@@ -231,29 +66,46 @@ const Header = () => {
             >
               <figure className="avatar avatar-nav">
                 <img
-                  src={user?.avatar?.url || "/images/default_avatar.jpg"}
+                  src={
+                    user?.avatar
+                      ? user?.avatar?.url
+                      : "/images/default_avatar.jpg"
+                  }
                   alt="User Avatar"
                   className="rounded-circle"
                 />
               </figure>
               <span>{user?.name}</span>
             </button>
-
             <div
               className="dropdown-menu w-100"
               aria-labelledby="dropDownMenuButton"
             >
               {user?.role === "admin" && (
                 <Link className="dropdown-item" to="/admin/dashboard">
-                  Dashboard
+                  {" "}
+                  Dashboard{" "}
                 </Link>
               )}
+
               <Link className="dropdown-item" to="/me/orders">
-                Orders
+                {" "}
+                Orders{" "}
               </Link>
+
               <Link className="dropdown-item" to="/me/profile">
-                Profile
+                {" "}
+                Profile{" "}
               </Link>
+
+              {/* <Link
+                className="dropdown-item text-danger"
+                to="/"
+                onClick={logoutHandler}
+              >
+                {" "}
+                Logout{" "}
+              </Link> */}
               <button
                 className="dropdown-item text-danger"
                 onClick={logoutHandler}
@@ -262,6 +114,13 @@ const Header = () => {
               </button>
             </div>
           </div>
+        ) : (
+          !isLoading && (
+            <Link to="/login" className="btn ms-4" id="login_btn">
+              {" "}
+              Login{" "}
+            </Link>
+          )
         )}
       </div>
     </nav>

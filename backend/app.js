@@ -86,7 +86,7 @@ connectDatabase();
 // --------------------
 // CORS Configuration
 // --------------------
-const allowedOrigins = ["http://localhost:3000", process.env.FRONTEND_URL];
+const allowedOrigins = ["http://localhost:8080", process.env.FRONTEND_URL];
 
 app.use(
   cors({
