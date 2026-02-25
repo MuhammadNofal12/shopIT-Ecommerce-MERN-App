@@ -20,21 +20,23 @@
 // };
 
 //Create token and save in cookie
-export default (user, statusCode, res) => {
+// utils/sendToken.js
+const sendToken = (user, statusCode, res) => {
   const token = user.getJwtToken();
 
   const options = {
-    expires: new Date(
-      Date.now() + process.env.COOKIE_EXPIRES_TIME * 24 * 60 * 60 * 1000,
-    ),
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    path: "/", // 🔥 ADD THIS
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+    secure: process.env.NODE_ENV === "production", // HTTPS only in prod
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-domain
+    path: "/", // required for logout
   };
 
   res.status(statusCode).cookie("token", token, options).json({
     success: true,
     user,
+    token,
   });
 };
+
+export default sendToken;
