@@ -32,12 +32,3 @@ export const authorizeRoles = (...roles) => {
     next();
   };
 };
-
-//Logout user=> /api/v1/logout
-// export const logout = catchAsyncErrors(async (req, res, next) => {
-//   res.cookie("token", null, {
-//     expires: new Date(Date.now()),
-//     httpOnly: true,
-//   });
-//   res.status(200).json({ message: "Logged Out!!!" });
-// });
