@@ -291,7 +291,7 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
 });
 
 // ------------------- LOGOUT USER -------------------
-export const logoutUser = catchAsyncErrors(async (req, res, next) => {
+export const logout = catchAsyncErrors(async (req, res, next) => {
   res.cookie("token", null, {
     expires: new Date(Date.now()),
     httpOnly: true,
