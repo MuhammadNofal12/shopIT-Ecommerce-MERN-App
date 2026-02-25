@@ -75,7 +75,7 @@
 
 //----------------------------------------
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-//import { userApi } from "./userApi";
+import { userApi } from "./userApi";
 import { setUser, setIsAuthenticated, setLoading } from "../features/userSlice";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
@@ -119,11 +119,10 @@ export const authApi = createApi({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
+          dispatch(userApi.util.resetApiState()); // 🔥 clear all cached queries
           dispatch(setUser(null));
           dispatch(setIsAuthenticated(false));
           dispatch(setLoading(false));
-
-          dispatch(authApi.util.resetApiState());
         } catch (error) {
           console.log(error);
         }

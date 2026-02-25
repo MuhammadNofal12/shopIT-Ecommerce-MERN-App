@@ -56,14 +56,28 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
 
 //logout user => /api/v1/logout
 export const logout = catchAsyncErrors(async (req, res, next) => {
-  res.cookie("token", null, {
-    expires: new Date(Date.now()),
+  res.cookie("token", "", {
     httpOnly: true,
+    secure: true, // match frontend, required for cross-site cookies in HTTPS
+    sameSite: "none", // match frontend
+    expires: new Date(0), // expire immediately
+    path: "/", // make sure path matches original cookie
   });
+
   res.status(200).json({
-    message: "Logged out",
+    success: true,
+    message: "Logged out successfully",
   });
 });
+// export const logout = catchAsyncErrors(async (req, res, next) => {
+//   res.cookie("token", null, {
+//     expires: new Date(Date.now()),
+//     httpOnly: true,
+//   });
+//   res.status(200).json({
+//     message: "Logged out",
+//   });
+// });
 
 //upload user avatar => /api/v1/me/upload_avatar
 export const uploadAvatar = catchAsyncErrors(async (req, res, next) => {

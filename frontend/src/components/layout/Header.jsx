@@ -8,13 +8,17 @@ import { logoutSuccess } from "../../redux/features/userSlice";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { isLoading } = useGetMeQuery();
+
   const [logout] = useLogoutMutation();
   // console.log("===================================");
   // console.log("LOGOUT=>", data);
   // console.log("===================================");
 
   const { user } = useSelector((state) => state.auth);
+
+  const { isLoading } = useGetMeQuery(null, {
+    skip: !user, // only fetch if user exists
+  });
 
   const { cartItems } = useSelector((state) => state.cart);
 
