@@ -18,6 +18,9 @@ const MyOrders = () => {
 
   const orderSuccess = searchParams.get("order_success");
 
+  // Debugging log for orderSuccess
+  console.log(orderSuccess); // Add this line to check if order_success param is present
+
   useEffect(() => {
     if (error) {
       toast.error(error?.data?.message);
@@ -25,6 +28,9 @@ const MyOrders = () => {
     if (orderSuccess) {
       // ✅ Clear the cart if payment was successful
       dispatch(clearCart());
+      toast.success(
+        "Your order was placed successfully, and the cart is cleared!",
+      );
 
       // ✅ Refetch the orders so Stripe payments appear immediately
       refetch();
