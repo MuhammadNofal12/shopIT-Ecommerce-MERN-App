@@ -105,21 +105,14 @@ app.use(
 
 app.options("*", cors());
 
-app.use("/api/v1", productRoutes);
-app.use("/api/v1", authRoutes);
-app.use("/api/v1", orderRoutes);
-
 // --------------------
 // Stripe Webhook (RAW body required BEFORE express.json())
 // --------------------
-// Mount the payment routes
-
-app.use("/api/v1", paymentRoutes);
-
-// --------------------
-// Stripe Webhook (RAW body required BEFORE express.json())
-// --------------------
-//app.use("/api/v1/payment/webhook", express.raw({ type: "application/json" }));
+app.use(
+  "/api/v1/payment/webhook",
+  express.raw({ type: "application/json" }),
+  paymentRoutes, // <-- make sure paymentRoutes has .post("/payment/webhook", ...)
+);
 
 // --------------------
 // Body Parsers
@@ -132,7 +125,11 @@ app.use(cookieParser());
 // Routes
 // --------------------
 
-//app.use("/api/v1", paymentRoutes);
+app.use("/api/v1", productRoutes);
+app.use("/api/v1", authRoutes);
+app.use("/api/v1", orderRoutes);
+
+app.use("/api/v1", paymentRoutes);
 
 // --------------------
 // Serve Frontend (Optional - if hosting backend + frontend together)
