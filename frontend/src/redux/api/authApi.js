@@ -77,6 +77,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { userApi } from "./userApi";
 import { setUser, setIsAuthenticated, setLoading } from "../features/userSlice";
+import { toast } from "react-hot-toast";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -95,6 +96,7 @@ export const authApi = createApi({
           dispatch(setUser(data.user));
           dispatch(setIsAuthenticated(true));
           dispatch(setLoading(false));
+          toast.success("Registration successful!"); // ✅ Add this
         } catch (error) {
           dispatch(setLoading(false));
         }
@@ -108,6 +110,7 @@ export const authApi = createApi({
           dispatch(setUser(data.user));
           dispatch(setIsAuthenticated(true));
           dispatch(setLoading(false));
+          toast.success("Login successful!"); // ✅ Add this
         } catch (error) {
           dispatch(setLoading(false));
           console.log(error);
@@ -123,8 +126,11 @@ export const authApi = createApi({
           dispatch(setUser(null));
           dispatch(setIsAuthenticated(false));
           dispatch(setLoading(false));
+          toast.success("Logout successful!"); // ✅ Add this
         } catch (error) {
           console.log(error);
+          dispatch(setLoading(false));
+          toast.error(error?.data?.message || "Something went wrong"); // ✅ Add this
         }
       },
     }),

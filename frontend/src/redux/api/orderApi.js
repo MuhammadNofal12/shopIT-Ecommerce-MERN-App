@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { toast } from "react-hot-toast";
 //import { API_BASE_URL } from "../../constants/api";
 
 // Use deployed backend URL from .env
@@ -19,12 +20,18 @@ export const orderApi = createApi({
   // keepUnusedDataFor: 30,
   endpoints: (builder) => ({
     createNewOrder: builder.mutation({
-      query(body) {
-        return {
-          url: "/orders/new",
-          method: "POST",
-          body,
-        };
+      query: (body) => ({
+        url: "/orders/new",
+        method: "POST",
+        body,
+      }),
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Order placed successfully!");
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to place order");
+        }
       },
     }),
     myOrders: builder.query({
@@ -35,12 +42,18 @@ export const orderApi = createApi({
       providesTags: ["Order"],
     }),
     stripeCheckoutSession: builder.mutation({
-      query(body) {
-        return {
-          url: "/payment/checkout_session",
-          method: "POST",
-          body,
-        };
+      query: (body) => ({
+        url: "/payment/checkout_session",
+        method: "POST",
+        body,
+      }),
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Redirecting to payment...");
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to initiate payment");
+        }
       },
     }),
     getDashboardSales: builder.query({
@@ -52,23 +65,35 @@ export const orderApi = createApi({
       providesTags: ["AdminOrders"],
     }),
     updateOrder: builder.mutation({
-      query({ id, body }) {
-        return {
-          url: `/admin/orders/${id}`,
-          method: "PUT",
-          body,
-        };
-      },
+      query: ({ id, body }) => ({
+        url: `/admin/orders/${id}`,
+        method: "PUT",
+        body,
+      }),
       invalidatesTags: ["Order"],
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Order updated successfully!");
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to update order");
+        }
+      },
     }),
     deleteOrder: builder.mutation({
-      query(id) {
-        return {
-          url: `/admin/orders/${id}`,
-          method: "DELETE",
-        };
-      },
+      query: (id) => ({
+        url: `/admin/orders/${id}`,
+        method: "DELETE",
+      }),
       invalidatesTags: ["AdminOrders"],
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Order deleted successfully!");
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to delete order");
+        }
+      },
     }),
   }),
 });

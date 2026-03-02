@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setIsAuthenticated, setLoading, setUser } from "../features/userSlice";
+import { toast } from "react-hot-toast";
 
 //import { API_BASE_URL } from "../../constants/api";
 
@@ -37,50 +38,80 @@ export const userApi = createApi({
       providesTags: ["User"],
     }),
     updateProfile: builder.mutation({
-      query(body) {
-        return {
-          url: "/me/update",
-          method: "PUT",
-          body,
-        };
-      },
+      query: (body) => ({
+        url: "/me/update",
+        method: "PUT",
+        body,
+      }),
       invalidatesTags: ["User"],
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Profile updated successfully!"); // ✅ Added
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to update profile"); // ✅ Added
+        }
+      },
     }),
     uploadAvatar: builder.mutation({
-      query(body) {
-        return {
-          url: "/me/upload_avatar",
-          method: "PUT",
-          body,
-        };
-      },
+      query: (body) => ({
+        url: "/me/upload_avatar",
+        method: "PUT",
+        body,
+      }),
       invalidatesTags: ["User"],
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Avatar uploaded successfully!"); // ✅ Added
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to upload avatar"); // ✅ Added
+        }
+      },
     }),
     updatePassword: builder.mutation({
-      query(body) {
-        return {
-          url: "/password/update",
-          method: "PUT",
-          body,
-        };
+      query: (body) => ({
+        url: "/password/update",
+        method: "PUT",
+        body,
+      }),
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Password updated successfully!"); // ✅ Added
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to update password"); // ✅ Added
+        }
       },
     }),
     forgotPassword: builder.mutation({
-      query(body) {
-        return {
-          url: "/password/forgot",
-          method: "POST",
-          body,
-        };
+      query: (body) => ({
+        url: "/password/forgot",
+        method: "POST",
+        body,
+      }),
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Password reset email sent!"); // ✅ Added
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to send reset email"); // ✅ Added
+        }
       },
     }),
     resetPassword: builder.mutation({
-      query({ token, body }) {
-        return {
-          url: `/password/reset/${token}`,
-          method: "PUT",
-          body,
-        };
+      query: ({ token, body }) => ({
+        url: `/password/reset/${token}`,
+        method: "PUT",
+        body,
+      }),
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Password reset successfully!"); // ✅ Added
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to reset password"); // ✅ Added
+        }
       },
     }),
     getAdminUsers: builder.query({
@@ -92,14 +123,20 @@ export const userApi = createApi({
       providesTags: ["AdminUser"],
     }),
     updateUser: builder.mutation({
-      query({ id, body }) {
-        return {
-          url: `/admin/users/${id}`,
-          method: "PUT",
-          body,
-        };
-      },
+      query: ({ id, body }) => ({
+        url: `/admin/users/${id}`,
+        method: "PUT",
+        body,
+      }),
       invalidatesTags: ["AdminUsers", "AdminUser"],
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("User updated successfully!"); // ✅ Added
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to update user"); // ✅ Added
+        }
+      },
     }),
     deleteUser: builder.mutation({
       query: (id) => ({
@@ -107,6 +144,14 @@ export const userApi = createApi({
         method: "DELETE",
       }),
       invalidatesTags: ["AdminUsers"],
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("User deleted successfully!"); // ✅ Added
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to delete user"); // ✅ Added
+        }
+      },
     }),
   }),
 });
