@@ -25,14 +25,7 @@ export const orderApi = createApi({
         method: "POST",
         body,
       }),
-      async onQueryStarted(args, { queryFulfilled }) {
-        try {
-          await queryFulfilled;
-          toast.success("Order placed successfully!");
-        } catch (error) {
-          toast.error(error?.data?.message || "Failed to place order");
-        }
-      },
+      // Remove onQueryStarted toast for COD
     }),
     myOrders: builder.query({
       query: () => `/me/orders`,
