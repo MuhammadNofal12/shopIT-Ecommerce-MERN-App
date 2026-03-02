@@ -137,32 +137,29 @@ const MyOrders = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Only Stripe success uses this query param
+  // Stripe success query param
   const orderSuccess = searchParams.get("order_success");
 
   useEffect(() => {
-    // Show error toast if any API error occurs
     if (error) {
       toast.error(error?.data?.message || "Failed to fetch orders");
     }
 
-    // Handle Stripe order success
     if (orderSuccess) {
-      // ✅ Clear cart once
+      // ✅ Only clear cart once
       dispatch(clearCart());
 
       // ✅ Show toast once
       toast.success("Your payment was successful, and cart is cleared!");
 
-      // ✅ Refetch orders so Stripe order appears immediately
+      // ✅ Refetch orders to show latest Stripe order
       refetch();
 
-      // ✅ Remove query param from URL without reload
+      // ✅ Remove query param so this effect doesn't run again
       navigate("/me/orders", { replace: true });
     }
   }, [error, orderSuccess, dispatch, navigate, refetch]);
 
-  // Prepare table data for MDBDataTable
   const setOrders = () => {
     const orders = {
       columns: [
