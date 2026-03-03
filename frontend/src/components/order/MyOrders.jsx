@@ -25,7 +25,7 @@ const MyOrders = () => {
     if (error) {
       toast.error(error?.data?.message);
     }
-    if (orderSuccess) {
+    if (orderSuccess === "true") {
       // ✅ Clear the cart if payment was successful
       dispatch(clearCart());
       toast.success(
