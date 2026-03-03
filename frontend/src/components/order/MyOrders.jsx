@@ -28,9 +28,10 @@ const MyOrders = () => {
     if (orderSuccess === "true") {
       // ✅ Clear the cart if payment was successful
       dispatch(clearCart());
-      toast.success(
-        "Your order was placed successfully, and the cart is cleared!",
-      );
+      // ✅ Small delay ensures toast renders properly
+      setTimeout(() => {
+        toast.success("Order placed successfully!");
+      }, 100);
 
       // ✅ Refetch the orders so Stripe payments appear immediately
       refetch();
@@ -38,7 +39,7 @@ const MyOrders = () => {
       // ✅ Remove query param from URL without reload
       navigate("/me/orders", { replace: true });
     }
-  }, [error, orderSuccess, dispatch, navigate, refetch]); // ✅ added refetch in dependency
+  }, [orderSuccess, error, dispatch, navigate, refetch]); // ✅ added refetch in dependency
   //   if (orderSuccess) {
   //     dispatch(clearCart());
   //     navigate("/me/orders");
