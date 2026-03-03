@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { clearCart } from "../../redux/features/cartSlice";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { useGetOrderFromSessionQuery } from "../../redux/features/orderApi";
+import { useGetOrderFromSessionQuery } from "../../redux/api/orderApi";
 import MetaData from "../layout/MetaData";
 
 const OrderSuccess = () => {
