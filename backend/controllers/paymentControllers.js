@@ -409,9 +409,9 @@ export const stripeCheckoutSession = catchAsyncErrors(
       mode: "payment",
       customer_email: req.user.email,
       client_reference_id: req.user._id.toString(),
-      success_url: `${process.env.FRONTEND_URL}/payment_success`, // redirect after payment success
+      //success_url: `${process.env.FRONTEND_URL}/payment_success`, // redirect after payment success
       //cancel_url: `${process.env.FRONTEND_URL}`, // redirect if user cancels
-      // success_url: `${process.env.FRONTEND_URL}/me/orders?order_success=true`,
+      success_url: `${process.env.FRONTEND_URL}/me/orders?order_success=true`,
       cancel_url: `${process.env.FRONTEND_URL}/cart`,
       metadata: { ...body.shippingInfo, itemsPrice: body.itemsPrice },
       shipping_options: [{ shipping_rate }],
