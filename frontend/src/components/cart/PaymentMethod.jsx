@@ -196,7 +196,7 @@ const PaymentMethod = () => {
 
     if (isSuccess) {
       toast.success("Order placed successfully!");
-      navigate("/me/orders?order_success=true");
+      navigate("/me/orders");
     }
   }, [orderError, isSuccess, navigate]);
 
