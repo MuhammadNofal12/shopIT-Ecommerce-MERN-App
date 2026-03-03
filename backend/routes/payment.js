@@ -27,13 +27,18 @@
 // export default router;
 
 //-------------------------------------------------updated----------------------------
+// routes/payment.js
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.js";
 import { stripeCheckoutSession } from "../controllers/paymentControllers.js";
 
 const router = express.Router();
 
-// Frontend calls this route to start Stripe checkout
-router.post("/checkout_session", isAuthenticatedUser, stripeCheckoutSession);
+// Define the route for creating Stripe checkout session
+router.post(
+  "/payment/checkout_session",
+  isAuthenticatedUser,
+  stripeCheckoutSession,
+);
 
 export default router;
