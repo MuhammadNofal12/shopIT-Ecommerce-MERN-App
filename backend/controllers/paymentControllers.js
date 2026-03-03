@@ -411,7 +411,8 @@ export const stripeCheckoutSession = catchAsyncErrors(
       client_reference_id: req.user._id.toString(),
       //success_url: `${process.env.FRONTEND_URL}/payment_success`, // redirect after payment success
       //cancel_url: `${process.env.FRONTEND_URL}`, // redirect if user cancels
-      success_url: `${process.env.FRONTEND_URL}/me/orders?order_success=true`,
+      //success_url: `${process.env.FRONTEND_URL}/me/orders?order_success=true`,
+      success_url: `${process.env.FRONTEND_URL}/order-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/cart`,
       metadata: { ...body.shippingInfo, itemsPrice: body.itemsPrice },
       shipping_options: [{ shipping_rate }],
@@ -447,6 +448,82 @@ const getOrderItems = async (line_items) => {
 // Stripe Webhook Handler
 // POST /api/v1/payment/webhook
 // ============================
+// export const stripeWebhook = async (req, res) => {
+//   const signature = req.headers["stripe-signature"];
+//   let event;
+
+//   try {
+//     event = stripe.webhooks.constructEvent(
+//       req.body,
+//       signature,
+//       process.env.STRIPE_WEBHOOK_SECRET,
+//     );
+//   } catch (err) {
+//     console.error("❌ Webhook signature verification failed:", err.message);
+//     return res.status(400).send(`Webhook Error: ${err.message}`);
+//   }
+
+//   // Respond immediately to Stripe
+
+//   //res.status(200).json({ received: true });
+//   if (event.type === "checkout.session.completed") {
+//     await handleOrder();
+//   }
+//   res.status(200).json({ received: true });
+
+//   // Process checkout session completed events
+//   if (event.type === "checkout.session.completed") {
+//     try {
+//       const session = event.data.object;
+
+//       const line_items = await stripe.checkout.sessions.listLineItems(
+//         session.id,
+//       );
+//       const orderItems = await getOrderItems(line_items);
+
+//       // Build order data
+//       const orderData = {
+//         user: session.client_reference_id,
+//         orderItems,
+//         itemsPrice: session.metadata.itemsPrice,
+//         taxAmount: session.total_details?.amount_tax / 100,
+//         shippingAmount: session.total_details?.amount_shipping / 100,
+//         totalAmount: session.amount_total / 100,
+//         paymentInfo: {
+//           id: session.payment_intent,
+//           status: session.payment_status,
+//         },
+//         paymentMethod: "Card",
+//         orderStatus: "Processing",
+//         paidAt: Date.now(),
+//         shippingInfo: {
+//           address: session.metadata.address,
+//           city: session.metadata.city,
+//           phoneNo: session.metadata.phoneNo,
+//           zipCode: session.metadata.zipCode,
+//           country: session.metadata.country,
+//         },
+//       };
+
+//       // Save order to DB
+//       const createdOrder = await Order.create(orderData);
+
+//       // Reduce stock
+//       for (const item of createdOrder.orderItems) {
+//         const product = await Product.findById(item.product);
+//         if (product) {
+//           product.stock -= item.quantity;
+//           await product.save({ validateBeforeSave: false });
+//         }
+//       }
+
+//       console.log("✅ Order created successfully from Stripe payment");
+//     } catch (err) {
+//       console.error("❌ Stripe webhook order creation failed:", err.message);
+//     }
+//   }
+// };
+
 export const stripeWebhook = async (req, res) => {
   const signature = req.headers["stripe-signature"];
   let event;
@@ -462,11 +539,6 @@ export const stripeWebhook = async (req, res) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // Respond immediately to Stripe
-
-  res.status(200).json({ received: true });
-
-  // Process checkout session completed events
   if (event.type === "checkout.session.completed") {
     try {
       const session = event.data.object;
@@ -474,9 +546,9 @@ export const stripeWebhook = async (req, res) => {
       const line_items = await stripe.checkout.sessions.listLineItems(
         session.id,
       );
+
       const orderItems = await getOrderItems(line_items);
 
-      // Build order data
       const orderData = {
         user: session.client_reference_id,
         orderItems,
@@ -500,10 +572,16 @@ export const stripeWebhook = async (req, res) => {
         },
       };
 
-      // Save order to DB
+      const existingOrder = await Order.findOne({
+        "paymentInfo.id": session.payment_intent,
+      });
+
+      if (existingOrder) {
+        console.log("⚠ Order already exists. Skipping...");
+        return res.status(200).json({ received: true });
+      }
       const createdOrder = await Order.create(orderData);
 
-      // Reduce stock
       for (const item of createdOrder.orderItems) {
         const product = await Product.findById(item.product);
         if (product) {
@@ -515,6 +593,35 @@ export const stripeWebhook = async (req, res) => {
       console.log("✅ Order created successfully from Stripe payment");
     } catch (err) {
       console.error("❌ Stripe webhook order creation failed:", err.message);
+      return res.status(500).json({ error: "Order processing failed" });
     }
+  }
+
+  res.status(200).json({ received: true });
+};
+
+// GET /api/v1/payment/order-from-session/:sessionId
+
+export const getOrderFromSession = async (req, res) => {
+  try {
+    const session = await stripe.checkout.sessions.retrieve(
+      req.params.sessionId,
+    );
+
+    if (!session) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+
+    const order = await Order.findOne({
+      "paymentInfo.id": session.payment_intent,
+    });
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.status(200).json({ success: true, order });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

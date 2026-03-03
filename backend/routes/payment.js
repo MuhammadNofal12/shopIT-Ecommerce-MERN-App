@@ -30,15 +30,33 @@
 // routes/payment.js
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.js";
-import { stripeCheckoutSession } from "../controllers/paymentControllers.js";
+import {
+  getOrderFromSession,
+  stripeCheckoutSession,
+  stripeWebhook,
+} from "../controllers/paymentControllers.js";
 
 const router = express.Router();
 
-// Define the route for creating Stripe checkout session
+// Create checkout session
 router.post(
   "/payment/checkout_session",
   isAuthenticatedUser,
   stripeCheckoutSession,
+);
+
+// Stripe webhook (MUST use raw body)
+router.post(
+  "/payment/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook,
+);
+
+// Get order using session id
+router.get(
+  "/payment/order-from-session/:sessionId",
+  isAuthenticatedUser,
+  getOrderFromSession,
 );
 
 export default router;
