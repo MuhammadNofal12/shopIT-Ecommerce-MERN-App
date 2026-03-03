@@ -45,22 +45,24 @@ const PaymentSuccess = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // ✅ Clear the cart when payment is successful
-    try {
-      dispatch(clearCart());
-      toast.success("Payment successful! Your order has been placed.");
-    } catch (error) {
-      toast.error("Error while clearing the cart.");
-      console.error("Error clearing cart:", error); // Log for debugging
-    }
+    const clearAndRedirect = async () => {
+      try {
+        // Clear the cart and show success toast
+        await dispatch(clearCart());
+        toast.success("Payment successful! Your order has been placed.");
 
-    // ✅ Redirect to orders page after 3 seconds
-    const timer = setTimeout(() => {
-      // ✅ Add a condition to ensure we're only redirecting when the payment is valid
-      navigate("/me/orders");
-    }, 3000);
+        // Redirect to orders page after a short delay
+        const timer = setTimeout(() => {
+          navigate("/me/orders");
+        }, 3000);
 
-    return () => clearTimeout(timer); // Cleanup the timer on component unmount
+        return () => clearTimeout(timer); // Cleanup timer on unmount
+      } catch (error) {
+        toast.error("Error while clearing the cart.");
+        console.error("Error clearing cart:", error); // Log for debugging
+      }
+    };
+    clearAndRedirect();
   }, [dispatch, navigate]);
 
   return (
