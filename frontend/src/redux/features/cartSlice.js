@@ -36,9 +36,15 @@ export const cartSlice = createSlice({
       );
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
     },
+    // clearCart: (state, action) => {
+    //   localStorage.removeItem("cartItems");
+    //   state.cartItems = [];
+    // },
     clearCart: (state, action) => {
       localStorage.removeItem("cartItems");
+      localStorage.removeItem("shippingInfo"); // ✅ optional if you want full reset
       state.cartItems = [];
+      state.shippingInfo = {};
     },
     saveShippingInfo: (state, action) => {
       state.shippingInfo = action.payload;

@@ -171,14 +171,23 @@ const PaymentMethod = () => {
   // ✅ Handle Stripe checkout response
   useEffect(() => {
     if (checkoutData) {
-      // ✅ Use navigate to redirect (optional, window.location.href also works)
-      window.location.href = checkoutData.url;
+      // Redirect user to the Stripe checkout page
+      window.location.href = checkoutData?.url;
+
+      // Only show the toast once after redirecting to Stripe checkout
+      if (!localStorage.getItem("orderToastShown")) {
+        toast.success("Order placed successfully!");
+        localStorage.setItem("orderToastShown", "true"); // Set the flag in localStorage
+      }
+
+      // Remove the 'orderToastShown' flag after the checkout process
+      localStorage.removeItem("orderToastShown");
     }
+
     if (checkoutError) {
-      toast.error(checkoutError?.data?.message || "Stripe checkout failed.");
+      toast.error(checkoutError?.data?.message || "Checkout failed.");
     }
   }, [checkoutData, checkoutError]);
-
   // ✅ Handle COD order success
   useEffect(() => {
     if (orderError) {

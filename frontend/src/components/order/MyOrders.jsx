@@ -22,24 +22,27 @@ const MyOrders = () => {
   console.log(orderSuccess); // Add this line to check if order_success param is present
 
   useEffect(() => {
-    if (error) {
-      toast.error(error?.data?.message);
-    }
+    // Prevent duplicate toast
     if (orderSuccess === "true") {
-      // ✅ Clear the cart if payment was successful
+      // ✅ Only clear cart once, not on every re-render
       dispatch(clearCart());
-      // ✅ Small delay ensures toast renders properly
-      setTimeout(() => {
+
+      // ✅ Prevent showing toast if it’s already been shown
+      if (!localStorage.getItem("orderToastShown")) {
         toast.success("Order placed successfully!");
-      }, 100);
 
-      // ✅ Refetch the orders so Stripe payments appear immediately
+        // Set a flag in localStorage so toast doesn't repeat
+        localStorage.setItem("orderToastShown", "true");
+      }
+
       refetch();
-
-      // ✅ Remove query param from URL without reload
       navigate("/me/orders", { replace: true });
     }
-  }, [orderSuccess, error, dispatch, navigate, refetch]); // ✅ added refetch in dependency
+
+    if (error) {
+      toast.error(error?.data?.message || "Failed to load orders.");
+    }
+  }, [orderSuccess, error, dispatch, navigate, refetch]);
   //   if (orderSuccess) {
   //     dispatch(clearCart());
   //     navigate("/me/orders");
