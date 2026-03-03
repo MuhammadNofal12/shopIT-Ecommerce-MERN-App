@@ -10,10 +10,10 @@ import {
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-import { loadStripe } from "@stripe/stripe-js";
+//import { loadStripe } from "@stripe/stripe-js";
 
 // Initialize Stripe once
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+//const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 const PaymentMethod = () => {
   const [method, setMethod] = useState("");
@@ -29,59 +29,25 @@ const PaymentMethod = () => {
     { data: checkoutData, error: checkoutError, isLoading },
   ] = useStripeCheckoutSessionMutation();
 
-  // useEffect(() => {
-  //   if (checkoutData) {
-  //     window.location.href = checkoutData?.url;
-  //     //   console.log("===========================");
-  //     //   console.log(checkoutData);
-  //     //   console.log("===========================");
-  //     //   navigate(checkoutData?.url);
-  //   }
-  //   if (checkoutError) {
-  //     toast.error(checkoutError?.data?.message);
-  //   }
-  // }, [checkoutData, checkoutError]);
-
-  // useEffect(() => {
-  //   if (error) {
-  //     toast.error(error?.data?.message);
-  //   }
-
-  //   if (isSuccess) {
-  //     navigate("/me/orders?order_success=true");
-  //   }
-  // }, [error, isSuccess, navigate]);
-  // ✅ Handle Stripe redirect
   useEffect(() => {
-    const redirectToStripe = async () => {
-      if (checkoutData?.id) {
-        const stripe = await stripePromise;
-        // ✅ Use Stripe redirectToCheckout with session ID
-        const { error } = await stripe.redirectToCheckout({
-          sessionId: checkoutData.id,
-        });
-        if (error) {
-          toast.error(error.message);
-        }
-      }
-    };
-    redirectToStripe();
-  }, [checkoutData]);
-
-  // ✅ Handle errors from Stripe checkout session
-  useEffect(() => {
-    if (checkoutError) {
-      toast.error(checkoutError?.data?.message || "Payment session failed");
+    if (checkoutData) {
+      window.location.href = checkoutData?.url;
+      //   console.log("===========================");
+      //   console.log(checkoutData);
+      //   console.log("===========================");
+      //   navigate(checkoutData?.url);
     }
-  }, [checkoutError]);
+    if (checkoutError) {
+      toast.error(checkoutError?.data?.message);
+    }
+  }, [checkoutData, checkoutError]);
 
-  // ✅ Handle COD order creation
   useEffect(() => {
     if (error) {
       toast.error(error?.data?.message);
     }
+
     if (isSuccess) {
-      // Clear cart and navigate after successful COD order
       navigate("/me/orders?order_success=true");
     }
   }, [error, isSuccess, navigate]);

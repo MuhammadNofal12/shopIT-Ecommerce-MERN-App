@@ -416,8 +416,8 @@ export const stripeCheckoutSession = catchAsyncErrors(
       line_items,
     });
 
-    // ✅ Only return session ID to frontend
-    res.status(200).json({ id: session.id });
+    // ✅ Return the redirect URL, not just session ID
+    res.status(200).json({ url: session.url });
   },
 );
 
