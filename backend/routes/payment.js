@@ -18,10 +18,11 @@ router.post(
   isAuthenticatedUser,
   stripeCheckoutSession,
 );
-router.post(
-  "/payment/webhook",
-  express.raw({ type: "application/json" }),
-  stripeWebhook,
-);
+// router.post(
+//   "/payment/webhook",
+//   express.raw({ type: "application/json" }),
+//   stripeWebhook,
+// );
+router.post("/payment/webhook", stripeWebhook);
 
 export default router;

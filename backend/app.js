@@ -108,11 +108,11 @@ app.options("*", cors());
 // --------------------
 // Stripe Webhook (RAW body required BEFORE express.json())
 // --------------------
-// app.use(
-//   "/api/v1/payment/webhook",
-//   express.raw({ type: "application/json" }),
-//   paymentRoutes, // <-- make sure paymentRoutes has .post("/payment/webhook", ...)
-// );
+app.use(
+  "/api/v1/payment/webhook",
+  express.raw({ type: "application/json" }),
+  paymentRoutes, // <-- make sure paymentRoutes has .post("/payment/webhook", ...)
+);
 
 // --------------------
 // Body Parsers
