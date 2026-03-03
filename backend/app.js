@@ -56,6 +56,8 @@ import authRoutes from "./routes/auth.js";
 import orderRoutes from "./routes/order.js";
 import paymentRoutes from "./routes/payment.js";
 
+import { stripeWebhook } from "./controllers/paymentControllers.js";
+
 // --------------------
 // Load Environment Variables (ALWAYS LOAD)
 // --------------------
@@ -108,10 +110,16 @@ app.options("*", cors());
 // --------------------
 // Stripe Webhook (RAW body required BEFORE express.json())
 // --------------------
-app.use(
+// app.use(
+//   "/api/v1/payment/webhook",
+//   express.raw({ type: "application/json" }),
+//   paymentRoutes, // <-- make sure paymentRoutes has .post("/payment/webhook", ...)
+// );
+
+app.post(
   "/api/v1/payment/webhook",
   express.raw({ type: "application/json" }),
-  paymentRoutes, // <-- make sure paymentRoutes has .post("/payment/webhook", ...)
+  stripeWebhook,
 );
 
 // --------------------
