@@ -46,17 +46,19 @@ router.post(
 );
 
 // Stripe webhook (MUST use raw body)
-router.post(
-  "/payment/webhook",
-  express.raw({ type: "application/json" }),
-  stripeWebhook,
-);
+// router.post(
+//   "/payment/webhook",
+//   express.raw({ type: "application/json" }),
+//   stripeWebhook,
+// );
+
+//router.post("/payment/webhook", stripeWebhook);
 
 // Get order using session id
-router.get(
-  "/payment/order-from-session/:sessionId",
-  isAuthenticatedUser,
-  getOrderFromSession,
-);
+// router.get(
+//   "/payment/order-from-session/:sessionId",
+//   isAuthenticatedUser,
+//   getOrderFromSession,
+// );
 
 export default router;

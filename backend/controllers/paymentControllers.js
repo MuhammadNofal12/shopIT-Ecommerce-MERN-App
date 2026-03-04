@@ -602,26 +602,26 @@ export const stripeWebhook = async (req, res) => {
 
 // GET /api/v1/payment/order-from-session/:sessionId
 
-export const getOrderFromSession = async (req, res) => {
-  try {
-    const session = await stripe.checkout.sessions.retrieve(
-      req.params.sessionId,
-    );
+// export const getOrderFromSession = async (req, res) => {
+//   try {
+//     const session = await stripe.checkout.sessions.retrieve(
+//       req.params.sessionId,
+//     );
 
-    if (!session) {
-      return res.status(404).json({ message: "Session not found" });
-    }
+//     if (!session) {
+//       return res.status(404).json({ message: "Session not found" });
+//     }
 
-    const order = await Order.findOne({
-      "paymentInfo.id": session.payment_intent,
-    });
+//     const order = await Order.findOne({
+//       "paymentInfo.id": session.payment_intent,
+//     });
 
-    if (!order) {
-      return res.status(404).json({ message: "Order not found" });
-    }
+//     if (!order) {
+//       return res.status(404).json({ message: "Order not found" });
+//     }
 
-    res.status(200).json({ success: true, order });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+//     res.status(200).json({ success: true, order });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };

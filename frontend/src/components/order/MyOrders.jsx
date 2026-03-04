@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { clearCart } from "../../redux/features/cartSlice";
 
 const MyOrders = () => {
-  const { data, isLoading, error, refetch } = useMyOrdersQuery(); // ✅ added refetch
+  const { data, isLoading, error } = useMyOrdersQuery();
 
   const [searchParams] = useSearchParams();
 
@@ -18,36 +18,15 @@ const MyOrders = () => {
 
   const orderSuccess = searchParams.get("order_success");
 
-  // Debugging log for orderSuccess
-  console.log(orderSuccess); // Add this line to check if order_success param is present
-
   useEffect(() => {
-    // Prevent duplicate toast
-    if (orderSuccess === "true") {
-      // ✅ Only clear cart once, not on every re-render
-      dispatch(clearCart());
-
-      // ✅ Prevent showing toast if it’s already been shown
-      if (!localStorage.getItem("orderToastShown")) {
-        toast.success("Order placed successfully!");
-
-        // Set a flag in localStorage so toast doesn't repeat
-        localStorage.setItem("orderToastShown", "true");
-      }
-
-      refetch();
-      navigate("/me/orders", { replace: true });
-    }
-
     if (error) {
-      toast.error(error?.data?.message || "Failed to load orders.");
+      toast.error(error?.data?.message);
     }
-  }, [orderSuccess, error, dispatch, navigate, refetch]);
-  //   if (orderSuccess) {
-  //     dispatch(clearCart());
-  //     navigate("/me/orders");
-  //   }
-  // }, [error, orderSuccess, dispatch, navigate]);
+    if (orderSuccess) {
+      dispatch(clearCart());
+      navigate("/me/orders");
+    }
+  }, [error, orderSuccess]);
 
   const setOrders = () => {
     const orders = {
