@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { toast } from "react-hot-toast";
+import { clearCart } from "../features/cartSlice";
 //import { API_BASE_URL } from "../../constants/api";
 
 // Use deployed backend URL from .env
@@ -25,9 +26,26 @@ export const orderApi = createApi({
         method: "POST",
         body,
       }),
-      // Remove onQueryStarted toast for COD
       invalidatesTags: ["Order"],
+      async onQueryStarted(args, { queryFulfilled, dispatch }) {
+        try {
+          await queryFulfilled; // ✅ wait for mutation to finish
+          toast.success("Order placed successfully!");
+          dispatch(clearCart()); // ✅ clear cart
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to place order");
+        }
+      },
     }),
+    // createNewOrder: builder.mutation({
+    //   query: (body) => ({
+    //     url: "/orders/new",
+    //     method: "POST",
+    //     body,
+    //   }),
+    //   // Remove onQueryStarted toast for COD
+    //   invalidatesTags: ["Order"],
+    // }),
     myOrders: builder.query({
       query: () => `/me/orders`,
       providesTags: ["Order"],
