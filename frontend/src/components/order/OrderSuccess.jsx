@@ -11,19 +11,23 @@ const OrderSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const hasRedirected = useRef(false);
+  const hasHandled = useRef(false); // ensures toast + cart cleared only once
 
   const sessionId = searchParams.get("session_id");
 
-  const { data, isFetching } = useGetOrderFromSessionQuery(sessionId, {
+  // Poll until order is created by webhook
+  const { data, isFetching, error } = useGetOrderFromSessionQuery(sessionId, {
     skip: !sessionId,
-    pollingInterval: 2000, // 🔥 poll every 2 sec until order exists
+    pollingInterval: 2000,
   });
 
   useEffect(() => {
-    if (data?.order && !hasRedirected.current) {
-      hasRedirected.current = true;
+    if (error) {
+      toast.error(error?.data?.message || "Failed to fetch order");
+    }
 
+    if (data?.order && !hasHandled.current) {
+      hasHandled.current = true;
       dispatch(clearCart());
       toast.success("Payment successful! 🎉");
 
@@ -31,7 +35,7 @@ const OrderSuccess = () => {
         navigate("/me/orders");
       }, 1500);
     }
-  }, [data, dispatch, navigate]);
+  }, [data, error, dispatch, navigate]);
 
   if (!sessionId) {
     return <h2 className="mt-5 text-center">Invalid payment session.</h2>;
