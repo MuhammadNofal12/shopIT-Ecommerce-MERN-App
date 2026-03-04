@@ -243,7 +243,7 @@ const Cart = () => {
           <div className="row d-flex justify-content-between">
             <div className="col-12 col-lg-8">
               {cartItems.map((item) => (
-                <>
+                <React.Fragment key={item?.product}>
                   <hr />
                   <div className="cart-item" data-key="product1">
                     <div className="row">
@@ -298,7 +298,7 @@ const Cart = () => {
                     </div>
                   </div>
                   <hr />
-                </>
+                </React.Fragment>
               ))}
             </div>
             <div className="col-12 col-lg-3 my-4">
