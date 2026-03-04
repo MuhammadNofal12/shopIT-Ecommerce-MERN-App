@@ -26,9 +26,11 @@ export const orderApi = createApi({
         body,
       }),
       // Remove onQueryStarted toast for COD
+      invalidatesTags: ["Order"],
     }),
     myOrders: builder.query({
       query: () => `/me/orders`,
+      providesTags: ["Order"],
     }),
     orderDetails: builder.query({
       query: (id) => `/orders/${id}`,
