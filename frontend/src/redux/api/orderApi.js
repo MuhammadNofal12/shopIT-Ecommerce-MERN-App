@@ -238,6 +238,7 @@ export const orderApi = createApi({
     // -------------------- GET ORDER FROM STRIPE SESSION --------------------
     getOrderFromSession: builder.query({
       query: (sessionId) => `/payment/order-from-session/${sessionId}`,
+      providesTags: ["Order"],
     }),
   }),
 });
