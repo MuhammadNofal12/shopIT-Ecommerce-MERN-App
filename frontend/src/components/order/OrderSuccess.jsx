@@ -15,7 +15,7 @@ const OrderSuccess = () => {
 
   const sessionId = searchParams.get("session_id");
 
-  // Poll until order is created by webhook
+  // Poll until order exists (every 2s)
   const { data, isFetching, error } = useGetOrderFromSessionQuery(sessionId, {
     skip: !sessionId,
     pollingInterval: 2000,
@@ -28,6 +28,7 @@ const OrderSuccess = () => {
 
     if (data?.order && !hasHandled.current) {
       hasHandled.current = true;
+
       dispatch(clearCart());
       toast.success("Payment successful! 🎉");
 
@@ -45,8 +46,14 @@ const OrderSuccess = () => {
     <>
       <MetaData title="Processing Payment..." />
       <div className="d-flex flex-column align-items-center mt-5">
-        <Loader />
-        <h4 className="mt-3">Verifying payment & creating order...</h4>
+        {isFetching ? (
+          <>
+            <Loader />
+            <h4 className="mt-3">Verifying payment & creating order...</h4>
+          </>
+        ) : (
+          <h4 className="mt-3">Payment verified, redirecting...</h4>
+        )}
       </div>
     </>
   );

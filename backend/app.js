@@ -58,6 +58,8 @@ import paymentRoutes from "./routes/payment.js";
 
 import { stripeWebhook } from "./controllers/paymentControllers.js";
 
+import bodyParser from "body-parser";
+
 // --------------------
 // Load Environment Variables (ALWAYS LOAD)
 // --------------------
@@ -116,9 +118,16 @@ app.options("*", cors());
 //   paymentRoutes, // <-- make sure paymentRoutes has .post("/payment/webhook", ...)
 // );
 
+// app.post(
+//   "/api/v1/payment/webhook",
+//   express.raw({ type: "application/json" }),
+//   stripeWebhook,
+// );
+
+// Stripe requires raw body for webhook
 app.post(
   "/api/v1/payment/webhook",
-  express.raw({ type: "application/json" }),
+  bodyParser.raw({ type: "application/json" }),
   stripeWebhook,
 );
 
