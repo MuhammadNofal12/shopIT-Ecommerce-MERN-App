@@ -154,76 +154,78 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 
-// ✅ Initialize Stripe once (outside component)
+// Initialize Stripe once
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 const PaymentMethod = () => {
   const [method, setMethod] = useState("");
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
 
-  const [createNewOrder, { isLoading: codLoading }] =
+  const [createNewOrder, { error: codError, isSuccess: codSuccess }] =
     useCreateNewOrderMutation();
 
-  const [stripeCheckoutSession, { isLoading: stripeLoading }] =
-    useStripeCheckoutSessionMutation();
+  const [
+    stripeCheckoutSession,
+    { data: checkoutData, error: checkoutError, isLoading },
+  ] = useStripeCheckoutSessionMutation();
 
   // ======================
-  // ✅ Submit Handler (FIXED)
-  // ======================
-  const submitHandler = async (e) => {
-    e.preventDefault();
-
-    if (!method) {
-      toast.error("Please select a payment method.");
-      return;
+  // Handle Stripe redirect using Stripe JS (no full page reload)
+  useEffect(() => {
+    if (checkoutData) {
+      const redirectToStripe = async () => {
+        const stripe = await stripePromise;
+        await stripe.redirectToCheckout({ sessionId: checkoutData.sessionId });
+      };
+      redirectToStripe();
     }
+    if (checkoutError) toast.error(checkoutError?.data?.message);
+  }, [checkoutData, checkoutError]);
+
+  // ======================
+  // Handle COD toast + navigation
+  useEffect(() => {
+    if (codError) toast.error(codError?.data?.message);
+    if (codSuccess) navigate("/me/orders");
+  }, [codError, codSuccess, navigate]);
+
+  // ======================
+  // Submit Handler
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (!method) return toast.error("Please select a payment method.");
 
     const { itemsPrice, shippingPrice, taxPrice, totalPrice } =
       calculateOrderCost(cartItems);
 
-    try {
-      // ------------------ COD ------------------
-      if (method === "COD") {
-        const orderData = {
-          shippingInfo,
-          orderItems: cartItems,
-          itemsPrice,
-          shippingAmount: shippingPrice,
-          taxAmount: taxPrice,
-          totalAmount: totalPrice,
-          paymentInfo: { status: "Not Paid" },
-          paymentMethod: "COD",
-        };
+    if (method === "COD") {
+      // COD order
+      const orderData = {
+        shippingInfo,
+        orderItems: cartItems,
+        itemsPrice,
+        shippingAmount: shippingPrice,
+        taxAmount: taxPrice,
+        totalAmount: totalPrice,
+        paymentInfo: { status: "Not Paid" },
+        paymentMethod: "COD",
+      };
+      createNewOrder(orderData);
+    }
 
-        await createNewOrder(orderData).unwrap();
-
-        toast.success("Order placed successfully!");
-        navigate("/me/orders");
-      }
-
-      // ------------------ CARD (Stripe) ------------------
-      if (method === "Card") {
-        const orderData = {
-          shippingInfo,
-          orderItems: cartItems,
-          itemsPrice,
-          shippingAmount: shippingPrice,
-          taxAmount: taxPrice,
-          totalAmount: totalPrice,
-        };
-
-        const res = await stripeCheckoutSession(orderData).unwrap();
-
-        const stripe = await stripePromise;
-
-        await stripe.redirectToCheckout({
-          sessionId: res.sessionId, // ⚠ must match backend response
-        });
-      }
-    } catch (err) {
-      toast.error(err?.data?.message || "Something went wrong");
+    if (method === "Card") {
+      // Stripe order
+      const orderData = {
+        shippingInfo,
+        orderItems: cartItems,
+        itemsPrice,
+        shippingAmount: shippingPrice,
+        taxAmount: taxPrice,
+        totalAmount: totalPrice,
+      };
+      stripeCheckoutSession(orderData);
     }
   };
 
@@ -231,13 +233,11 @@ const PaymentMethod = () => {
     <>
       <MetaData title={"Payment Method"} />
       <CheckoutSteps shipping confirmOrder payment />
-
       <div className="row wrapper">
         <div className="col-10 col-lg-5">
           <form className="shadow rounded bg-body p-4" onSubmit={submitHandler}>
             <h2 className="mb-4">Select Payment Method</h2>
 
-            {/* COD */}
             <div className="form-check">
               <input
                 className="form-check-input"
@@ -252,7 +252,6 @@ const PaymentMethod = () => {
               </label>
             </div>
 
-            {/* CARD */}
             <div className="form-check mt-2">
               <input
                 className="form-check-input"
@@ -271,7 +270,7 @@ const PaymentMethod = () => {
               id="shipping_btn"
               type="submit"
               className="btn py-2 w-100 mt-4"
-              disabled={codLoading || stripeLoading || !method}
+              disabled={isLoading || !method}
             >
               CONTINUE
             </button>
