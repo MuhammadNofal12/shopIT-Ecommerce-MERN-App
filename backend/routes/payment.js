@@ -55,10 +55,10 @@ router.post(
 //router.post("/payment/webhook", stripeWebhook);
 
 // Get order using session id
-// router.get(
-//   "/payment/order-from-session/:sessionId",
-//   isAuthenticatedUser,
-//   getOrderFromSession,
-// );
+router.get(
+  "/payment/order-from-session/:sessionId",
+  isAuthenticatedUser,
+  getOrderFromSession,
+);
 
 export default router;

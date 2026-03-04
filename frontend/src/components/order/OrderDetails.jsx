@@ -35,7 +35,10 @@ const OrderDetails = () => {
         <div className="col-12 col-lg-9 mt-5 order-details">
           <div className="d-flex justify-content-between align-items-center">
             <h3 className="mt-5 mb-4">Your Order Details</h3>
-            <a className="btn btn-success" href="/invoice/order/order-id">
+            <a
+              className="btn btn-success"
+              href={`/invoice/order/${order?._id}`}
+            >
               <i className="fa fa-print"></i> Invoice
             </a>
           </div>
@@ -113,8 +116,8 @@ const OrderDetails = () => {
 
           <hr />
           <div className="cart-item my-1">
-            {orderItems?.map((item) => (
-              <div className="row my-5">
+            {orderItems?.map((item, index) => (
+              <div className="row my-5" key={item.product || index}>
                 <div className="col-4 col-lg-2">
                   <img
                     src={item?.image}

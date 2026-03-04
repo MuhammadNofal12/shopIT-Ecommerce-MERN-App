@@ -90,21 +90,14 @@ export const orderApi = createApi({
         }
       },
     }),
-    // getOrderFromSession: builder.query({
-    //   query: (sessionId) => `/payment/order-from-session/${sessionId}`,
-    //   async onQueryStarted(args, { queryFulfilled }) {
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (error) {
-    //       toast.error(error?.data?.message || "Failed to fetch order");
-    //     }
-    //   },
-    // }),
+    getOrderFromSession: builder.query({
+      query: (sessionId) => `/payment/order-from-session/${sessionId}`,
+    }),
   }),
 });
 
 export const {
-  //useGetOrderFromSessionQuery,
+  useGetOrderFromSessionQuery,
   useCreateNewOrderMutation,
   useStripeCheckoutSessionMutation,
   useMyOrdersQuery,

@@ -21,7 +21,7 @@ import OrderDetails from "../order/OrderDetails";
 import Invoice from "../invoice/Invoice";
 import Home from "../Home";
 //import PaymentSuccess from "../order/PaymentSuccess"; // import your new page
-//import OrderSuccess from "../order/OrderSuccess";
+import OrderSuccess from "../order/OrderSuccess";
 
 const userRoutes = () => {
   return (
@@ -114,14 +114,14 @@ const userRoutes = () => {
           </ProtectedRoute>
         }
       /> */}
-      {/* <Route
+      <Route
         path="/order-success"
         element={
           <ProtectedRoute>
             <OrderSuccess />
           </ProtectedRoute>
         }
-      /> */}
+      />
 
       <Route
         path="/invoice/order/:id"

@@ -411,8 +411,8 @@ export const stripeCheckoutSession = catchAsyncErrors(
       client_reference_id: req.user._id.toString(),
       //success_url: `${process.env.FRONTEND_URL}/payment_success`, // redirect after payment success
       //cancel_url: `${process.env.FRONTEND_URL}`, // redirect if user cancels
-      success_url: `${process.env.FRONTEND_URL}/me/orders?order_success=true`,
-      //success_url: `${process.env.FRONTEND_URL}/order-success?session_id={CHECKOUT_SESSION_ID}`,
+      // success_url: `${process.env.FRONTEND_URL}/me/orders?order_success=true`,
+      success_url: `${process.env.FRONTEND_URL}/order-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/cart`,
       metadata: { ...body.shippingInfo, itemsPrice: body.itemsPrice },
       shipping_options: [{ shipping_rate }],
@@ -602,26 +602,26 @@ export const stripeWebhook = async (req, res) => {
 
 // GET /api/v1/payment/order-from-session/:sessionId
 
-// export const getOrderFromSession = async (req, res) => {
-//   try {
-//     const session = await stripe.checkout.sessions.retrieve(
-//       req.params.sessionId,
-//     );
+export const getOrderFromSession = async (req, res) => {
+  try {
+    const session = await stripe.checkout.sessions.retrieve(
+      req.params.sessionId,
+    );
 
-//     if (!session) {
-//       return res.status(404).json({ message: "Session not found" });
-//     }
+    if (!session) {
+      return res.status(404).json({ message: "Session not found" });
+    }
 
-//     const order = await Order.findOne({
-//       "paymentInfo.id": session.payment_intent,
-//     });
+    const order = await Order.findOne({
+      "paymentInfo.id": session.payment_intent,
+    });
 
-//     if (!order) {
-//       return res.status(404).json({ message: "Order not found" });
-//     }
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
 
-//     res.status(200).json({ success: true, order });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
+    res.status(200).json({ success: true, order });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
