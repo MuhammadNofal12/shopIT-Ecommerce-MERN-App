@@ -54,6 +54,7 @@ const orderSchema = new mongoose.Schema(
         },
       },
     ],
+    stripeSessionId: String,
     paymentMethod: {
       type: String,
       required: [true, "Please select payment method"],

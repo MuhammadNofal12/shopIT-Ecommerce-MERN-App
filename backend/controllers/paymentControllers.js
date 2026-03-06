@@ -551,6 +551,7 @@ export const stripeWebhook = async (req, res) => {
 
       const orderData = {
         user: session.client_reference_id,
+        stripeSessionId: session.id,
         orderItems,
         itemsPrice: session.metadata.itemsPrice,
         taxAmount: session.total_details?.amount_tax / 100,
@@ -572,8 +573,12 @@ export const stripeWebhook = async (req, res) => {
         },
       };
 
+      // const existingOrder = await Order.findOne({
+      //   "paymentInfo.id": session.payment_intent,
+      // });
+      // ✅ Check if order already created for this Stripe session
       const existingOrder = await Order.findOne({
-        "paymentInfo.id": session.payment_intent,
+        stripeSessionId: session.id,
       });
 
       if (existingOrder) {
