@@ -16,10 +16,8 @@ import {
 const ListUsers = () => {
   const { data, isLoading, error } = useGetAdminUsersQuery();
 
-  const [
-    deleteUser,
-    { error: deleteError, isLoading: isDeleteLoading, isSuccess },
-  ] = useDeleteUserMutation();
+  const [deleteUser, { error: deleteError, isLoading: isDeleteLoading }] =
+    useDeleteUserMutation();
 
   useEffect(() => {
     if (error) {
@@ -29,10 +27,10 @@ const ListUsers = () => {
     if (deleteError) {
       toast.error(deleteError?.data?.message);
     }
-    if (isSuccess) {
-      toast.success("User deleted");
-    }
-  }, [error, deleteError, isSuccess]);
+    // if (isSuccess) {
+    //   toast.success("User deleted");
+    // }
+  }, [error, deleteError]);
 
   const deleteUserHandler = (id) => {
     deleteUser(id);

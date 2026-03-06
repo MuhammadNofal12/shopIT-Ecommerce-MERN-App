@@ -39,7 +39,7 @@ const UpdateUser = () => {
       toast.error(error?.data?.message);
     }
     if (isSuccess) {
-      toast.success("User Updated");
+      //  toast.success("User Updated");
       navigate("/admin/users");
     }
   }, [error, isSuccess, navigate]);
