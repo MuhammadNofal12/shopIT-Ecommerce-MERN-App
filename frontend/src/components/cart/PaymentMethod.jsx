@@ -141,6 +141,149 @@
 // export default PaymentMethod;
 
 //--------------------------updated----------------------------------------------------------
+// import React, { useEffect, useState } from "react";
+// import MetaData from "../layout/MetaData";
+// import { useSelector } from "react-redux";
+// import CheckoutSteps from "./CheckoutSteps";
+// import { calculateOrderCost } from "../../helpers/helpers";
+// import {
+//   useCreateNewOrderMutation,
+//   useStripeCheckoutSessionMutation,
+// } from "../../redux/api/orderApi";
+// import toast from "react-hot-toast";
+// import { useNavigate } from "react-router-dom";
+// import { loadStripe } from "@stripe/stripe-js";
+
+// // Initialize Stripe once
+// const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+
+// const PaymentMethod = () => {
+//   const [method, setMethod] = useState("");
+
+//   const navigate = useNavigate();
+//   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
+
+//   const [createNewOrder, { error: codError, isSuccess: codSuccess }] =
+//     useCreateNewOrderMutation();
+
+//   const [
+//     stripeCheckoutSession,
+//     { data: checkoutData, error: checkoutError, isLoading },
+//   ] = useStripeCheckoutSessionMutation();
+
+//   // ======================
+//   // Handle Stripe redirect using Stripe JS (no full page reload)
+//   useEffect(() => {
+//     if (checkoutData) {
+//       const redirectToStripe = async () => {
+//         const stripe = await stripePromise;
+//         await stripe.redirectToCheckout({ sessionId: checkoutData.sessionId });
+//       };
+//       redirectToStripe();
+//     }
+//     if (checkoutError) toast.error(checkoutError?.data?.message);
+//   }, [checkoutData, checkoutError]);
+
+//   // ======================
+//   // Handle COD toast + navigation
+//   useEffect(() => {
+//     if (codError) toast.error(codError?.data?.message);
+//     if (codSuccess) navigate("/me/orders");
+//   }, [codError, codSuccess, navigate]);
+
+//   // ======================
+//   // Submit Handler
+//   const submitHandler = (e) => {
+//     e.preventDefault();
+//     if (!method) return toast.error("Please select a payment method.");
+
+//     const { itemsPrice, shippingPrice, taxPrice, totalPrice } =
+//       calculateOrderCost(cartItems);
+
+//     if (method === "COD") {
+//       // COD order
+//       const orderData = {
+//         shippingInfo,
+//         orderItems: cartItems,
+//         itemsPrice,
+//         shippingAmount: shippingPrice,
+//         taxAmount: taxPrice,
+//         totalAmount: totalPrice,
+//         paymentInfo: { status: "Not Paid" },
+//         paymentMethod: "COD",
+//       };
+//       createNewOrder(orderData);
+//     }
+
+//     if (method === "Card") {
+//       // Stripe order
+//       const orderData = {
+//         shippingInfo,
+//         orderItems: cartItems,
+//         itemsPrice,
+//         shippingAmount: shippingPrice,
+//         taxAmount: taxPrice,
+//         totalAmount: totalPrice,
+//       };
+//       stripeCheckoutSession(orderData);
+//     }
+//   };
+
+//   return (
+//     <>
+//       <MetaData title={"Payment Method"} />
+//       <CheckoutSteps shipping confirmOrder payment />
+//       <div className="row wrapper">
+//         <div className="col-10 col-lg-5">
+//           <form className="shadow rounded bg-body p-4" onSubmit={submitHandler}>
+//             <h2 className="mb-4">Select Payment Method</h2>
+
+//             <div className="form-check">
+//               <input
+//                 className="form-check-input"
+//                 type="radio"
+//                 name="payment_mode"
+//                 id="codradio"
+//                 value="COD"
+//                 onChange={() => setMethod("COD")}
+//               />
+//               <label className="form-check-label" htmlFor="codradio">
+//                 Cash on Delivery
+//               </label>
+//             </div>
+
+//             <div className="form-check mt-2">
+//               <input
+//                 className="form-check-input"
+//                 type="radio"
+//                 name="payment_mode"
+//                 id="cardradio"
+//                 value="Card"
+//                 onChange={() => setMethod("Card")}
+//               />
+//               <label className="form-check-label" htmlFor="cardradio">
+//                 Card - VISA, MasterCard
+//               </label>
+//             </div>
+
+//             <button
+//               id="shipping_btn"
+//               type="submit"
+//               className="btn py-2 w-100 mt-4"
+//               disabled={isLoading || !method}
+//             >
+//               CONTINUE
+//             </button>
+//           </form>
+//         </div>
+//       </div>
+//     </>
+//   );
+// };
+
+// export default PaymentMethod;
+
+//---------------------------------------------------------------updatedd 2----------------------------
 import React, { useEffect, useState } from "react";
 import MetaData from "../layout/MetaData";
 import { useSelector } from "react-redux";
@@ -152,15 +295,12 @@ import {
 } from "../../redux/api/orderApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { loadStripe } from "@stripe/stripe-js";
-
-// Initialize Stripe once
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 const PaymentMethod = () => {
   const [method, setMethod] = useState("");
 
   const navigate = useNavigate();
+
   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
 
   const [createNewOrder, { error: codError, isSuccess: codSuccess }] =
@@ -171,37 +311,40 @@ const PaymentMethod = () => {
     { data: checkoutData, error: checkoutError, isLoading },
   ] = useStripeCheckoutSessionMutation();
 
-  // ======================
-  // Handle Stripe redirect using Stripe JS (no full page reload)
+  // ✅ Handle Stripe redirect
   useEffect(() => {
-    if (checkoutData) {
-      const redirectToStripe = async () => {
-        const stripe = await stripePromise;
-        await stripe.redirectToCheckout({ sessionId: checkoutData.sessionId });
-      };
-      redirectToStripe();
+    if (checkoutData?.url) {
+      // ✅ Redirect directly to Stripe Checkout
+      window.location.href = checkoutData.url;
     }
-    if (checkoutError) toast.error(checkoutError?.data?.message);
+
+    if (checkoutError) {
+      toast.error(checkoutError?.data?.message);
+    }
   }, [checkoutData, checkoutError]);
 
-  // ======================
-  // Handle COD toast + navigation
+  // ✅ Handle COD order success
   useEffect(() => {
-    if (codError) toast.error(codError?.data?.message);
-    if (codSuccess) navigate("/me/orders");
+    if (codError) {
+      toast.error(codError?.data?.message);
+    }
+
+    if (codSuccess) {
+      navigate("/me/orders");
+    }
   }, [codError, codSuccess, navigate]);
 
-  // ======================
-  // Submit Handler
   const submitHandler = (e) => {
     e.preventDefault();
-    if (!method) return toast.error("Please select a payment method.");
+
+    if (!method) {
+      return toast.error("Please select payment method");
+    }
 
     const { itemsPrice, shippingPrice, taxPrice, totalPrice } =
       calculateOrderCost(cartItems);
 
     if (method === "COD") {
-      // COD order
       const orderData = {
         shippingInfo,
         orderItems: cartItems,
@@ -212,11 +355,11 @@ const PaymentMethod = () => {
         paymentInfo: { status: "Not Paid" },
         paymentMethod: "COD",
       };
+
       createNewOrder(orderData);
     }
 
     if (method === "Card") {
-      // Stripe order
       const orderData = {
         shippingInfo,
         orderItems: cartItems,
@@ -225,6 +368,7 @@ const PaymentMethod = () => {
         taxAmount: taxPrice,
         totalAmount: totalPrice,
       };
+
       stripeCheckoutSession(orderData);
     }
   };
@@ -233,44 +377,45 @@ const PaymentMethod = () => {
     <>
       <MetaData title={"Payment Method"} />
       <CheckoutSteps shipping confirmOrder payment />
+
       <div className="row wrapper">
         <div className="col-10 col-lg-5">
           <form className="shadow rounded bg-body p-4" onSubmit={submitHandler}>
             <h2 className="mb-4">Select Payment Method</h2>
 
+            {/* ✅ COD OPTION */}
             <div className="form-check">
               <input
                 className="form-check-input"
                 type="radio"
                 name="payment_mode"
-                id="codradio"
                 value="COD"
                 onChange={() => setMethod("COD")}
               />
-              <label className="form-check-label" htmlFor="codradio">
-                Cash on Delivery
-              </label>
+
+              <label className="form-check-label">Cash on Delivery</label>
             </div>
 
+            {/* ✅ CARD OPTION */}
             <div className="form-check mt-2">
               <input
                 className="form-check-input"
                 type="radio"
                 name="payment_mode"
-                id="cardradio"
                 value="Card"
                 onChange={() => setMethod("Card")}
               />
-              <label className="form-check-label" htmlFor="cardradio">
+
+              <label className="form-check-label">
                 Card - VISA, MasterCard
               </label>
             </div>
 
+            {/* ✅ SUBMIT BUTTON */}
             <button
-              id="shipping_btn"
               type="submit"
               className="btn py-2 w-100 mt-4"
-              disabled={isLoading || !method}
+              disabled={isLoading}
             >
               CONTINUE
             </button>
