@@ -14,10 +14,8 @@ import AdminLayout from "../layout/AdminLayout";
 const ListProducts = () => {
   const { data, isLoading, error } = useGetAdminProductsQuery();
 
-  const [
-    deleteProduct,
-    { isLoading: isDeleteLoading, error: deleteError, isSuccess },
-  ] = useDeleteProductMutation();
+  const [deleteProduct, { isLoading: isDeleteLoading, error: deleteError }] =
+    useDeleteProductMutation();
 
   useEffect(() => {
     if (error) {
@@ -26,10 +24,7 @@ const ListProducts = () => {
     if (deleteError) {
       toast.error(deleteError?.data?.message);
     }
-    if (isSuccess) {
-      toast.success("Product Deleted");
-    }
-  }, [error, deleteError, isSuccess]);
+  }, [error, deleteError]);
 
   const deleteProductHandler = (id) => {
     deleteProduct(id);
