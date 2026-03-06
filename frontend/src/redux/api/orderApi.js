@@ -209,8 +209,8 @@ export const orderApi = createApi({
         method: "PUT",
         body,
       }),
-      // invalidatesTags: ["Order"],
-      invalidatesTags: ["AdminOrders"],
+      invalidatesTags: ["Order"],
+      // invalidatesTags: ["AdminOrders"],
       async onQueryStarted(args, { queryFulfilled }) {
         try {
           await queryFulfilled;
