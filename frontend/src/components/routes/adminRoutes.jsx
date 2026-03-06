@@ -12,7 +12,7 @@ import ListUsers from "../admin/ListUsers";
 import UpdateUser from "../admin/UpdateUser";
 import ProductReviews from "../admin/ProductReviews";
 
-const AdminRoutesTemp = () => {
+const adminRoutes = () => {
   return (
     <>
       <Route
@@ -104,4 +104,4 @@ const AdminRoutesTemp = () => {
   );
 };
 
-export default AdminRoutesTemp;
+export default adminRoutes;

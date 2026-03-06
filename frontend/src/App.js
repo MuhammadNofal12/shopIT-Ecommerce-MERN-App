@@ -21,8 +21,8 @@ import {
 import { API_BASE_URL } from "./constants/api";
 //import UserRoutes from "./components/routes/UserRoutes.jsx";
 //import AdminRoutes from "./components/routes/AdminRoutes.jsx";
-import UserRoutes from "./components/routes/UserRoutesTemp.jsx";
-import AdminRoutes from "./components/routes/AdminRoutesTemp.jsx";
+import UserRoutes from "./components/routes/userRoutes.jsx";
+import AdminRoutes from "./components/routes/adminRoutes.jsx";
 
 console.log("API URL:", API_BASE_URL);
 
