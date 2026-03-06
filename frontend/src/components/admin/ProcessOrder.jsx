@@ -39,11 +39,7 @@ const ProcessOrder = () => {
     if (error) {
       toast.error(error?.data?.message);
     }
-
-    if (isSuccess) {
-      toast.success("Order Updated");
-    }
-  }, [error, isSuccess]);
+  }, [error]);
 
   const updateOrderHandler = (id) => {
     const data = { status };
@@ -171,8 +167,15 @@ const ProcessOrder = () => {
             </select>
           </div>
 
+          {/* <button
+            className="btn btn-primary w-100"
+            onClick={() => updateOrderHandler(order?._id)}
+          >
+            Update Status
+          </button> */}
           <button
             className="btn btn-primary w-100"
+            disabled={status === orderStatus}
             onClick={() => updateOrderHandler(order?._id)}
           >
             Update Status
