@@ -34,7 +34,7 @@ const NewProduct = () => {
     }
 
     if (isSuccess) {
-      toast.success("Product created");
+      // toast.success("Product created");
       navigate("/admin/products");
     }
   }, [error, isSuccess, navigate]);
@@ -127,7 +127,10 @@ const NewProduct = () => {
                   name="category"
                   value={category}
                   onChange={onChange}
+                  required
                 >
+                  <option value="">Select Category</option>
+
                   {PRODUCT_CATEGORIES?.map((category) => (
                     <option key={category} value={category}>
                       {category}
