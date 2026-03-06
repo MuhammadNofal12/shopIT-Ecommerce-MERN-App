@@ -6,8 +6,9 @@ import Header from "./components/layout/Header";
 import { Toaster } from "react-hot-toast";
 
 //import useUserRoutes from "./components/routes/UserRoutes";
-//import useUserRoutes from "./components/routes/UserRoutes";
-//import useAdminRoutes from "./components/routes/AdminRoutes";
+import useUserRoutes from "./components/routes/userRoutes";
+import useAdminRoutes from "./components/routes/adminRoutes";
+
 import NotFound from "./components/layout/NotFound";
 
 import { useLazyGetMeQuery } from "./redux/api/userApi";
@@ -21,8 +22,8 @@ import {
 import { API_BASE_URL } from "./constants/api";
 //import UserRoutes from "./components/routes/UserRoutes.jsx";
 //import AdminRoutes from "./components/routes/AdminRoutes.jsx";
-import UserRoutes from "./components/routes/userRoutes.jsx";
-import AdminRoutes from "./components/routes/adminRoutes.jsx";
+//import UserRoutes from "./components/routes/userRoutes.jsx";
+//import AdminRoutes from "./components/routes/adminRoutes.jsx";
 
 console.log("API URL:", API_BASE_URL);
 
@@ -57,8 +58,8 @@ function App() {
     }; // Cleanup
   }, [getMe, dispatch]);
 
-  //const userRoutes = useUserRoutes();
-  //const adminRoutes = useAdminRoutes();
+  const userRoutes = useUserRoutes();
+  const adminRoutes = useAdminRoutes();
 
   return (
     <Router>
@@ -67,8 +68,8 @@ function App() {
         <Header />
         <div className="container">
           <Routes>
-            {UserRoutes}
-            {AdminRoutes}
+            {userRoutes}
+            {adminRoutes}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
