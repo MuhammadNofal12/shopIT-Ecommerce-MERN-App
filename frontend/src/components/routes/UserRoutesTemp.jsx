@@ -23,7 +23,7 @@ import Home from "../Home";
 //import PaymentSuccess from "../order/PaymentSuccess"; // import your new page
 import OrderSuccess from "../order/OrderSuccess";
 
-const UserRoutes = () => {
+const UserRoutesTemp = () => {
   return (
     <>
       <Route path="/" element={<Home />} />
@@ -134,4 +134,4 @@ const UserRoutes = () => {
   );
 };
 
-export default UserRoutes;
+export default UserRoutesTemp;
