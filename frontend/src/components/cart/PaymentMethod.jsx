@@ -415,7 +415,7 @@ const PaymentMethod = () => {
             <button
               type="submit"
               className="btn py-2 w-100 mt-4"
-              disabled={isLoading}
+              disabled={isLoading || !method}
             >
               CONTINUE
             </button>
