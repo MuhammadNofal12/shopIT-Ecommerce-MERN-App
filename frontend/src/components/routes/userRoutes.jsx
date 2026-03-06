@@ -23,7 +23,7 @@ import Home from "../Home";
 //import PaymentSuccess from "../order/PaymentSuccess"; // import your new page
 import OrderSuccess from "../order/OrderSuccess";
 
-const userRoutes = () => {
+const UserRoutes = () => {
   return (
     <>
       <Route path="/" element={<Home />} />
@@ -117,9 +117,8 @@ const userRoutes = () => {
       <Route
         path="/order-success"
         element={
-          <ProtectedRoute>
-            <OrderSuccess />
-          </ProtectedRoute>
+          // <ProtectedRoute>
+          <OrderSuccess />
         }
       />
 
@@ -135,4 +134,4 @@ const userRoutes = () => {
   );
 };
 
-export default userRoutes;
+export default UserRoutes;

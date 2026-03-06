@@ -5,8 +5,9 @@ import Footer from "./components/layout/Footer";
 import Header from "./components/layout/Header";
 import { Toaster } from "react-hot-toast";
 
-import useUserRoutes from "./components/routes/userRoutes";
-import useAdminRoutes from "./components/routes/adminRoutes";
+//import useUserRoutes from "./components/routes/UserRoutes";
+import useUserRoutes from "./components/routes/UserRoutes";
+import useAdminRoutes from "./components/routes/AdminRoutes";
 import NotFound from "./components/layout/NotFound";
 
 import { useLazyGetMeQuery } from "./redux/api/userApi";

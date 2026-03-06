@@ -59,35 +59,37 @@ import { clearCart } from "../../redux/features/cartSlice";
 import { useGetOrderFromSessionQuery } from "../../redux/api/orderApi";
 
 const OrderSuccess = () => {
+  console.log("✅ OrderSuccess component loaded"); // ⭐ ADD HERE
+
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Get Stripe session id from URL
   const sessionId = searchParams.get("session_id");
 
-  // Debugging
-  console.log("Stripe Session ID:", sessionId);
+  console.log("Stripe Session ID:", sessionId); // ⭐ already correct
 
-  // Fetch order created from webhook
   const { data, isLoading, error } = useGetOrderFromSessionQuery(sessionId, {
     skip: !sessionId,
   });
 
+  console.log("Order API response:", data); // ⭐ ADD HERE
+
   useEffect(() => {
     if (data?.order) {
+      console.log("✅ Order found in DB"); // ⭐ ADD HERE
+
       toast.success("Payment Successful 🎉");
 
-      // clear cart
       dispatch(clearCart());
 
-      // redirect to orders page after 2 seconds
       setTimeout(() => {
         navigate("/me/orders");
       }, 2000);
     }
 
     if (error) {
+      console.log("❌ Error fetching order:", error); // ⭐ ADD HERE
       toast.error("Unable to verify payment");
     }
   }, [data, error, dispatch, navigate]);
