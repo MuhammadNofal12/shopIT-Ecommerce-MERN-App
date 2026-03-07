@@ -50,7 +50,7 @@ const UploadImages = () => {
 
     if (isSuccess) {
       setImagesPreview([]);
-      toast.success("Images Uploaded");
+      // toast.success("Images Uploaded");
       navigate("/admin/products");
     }
   }, [data, error, isSuccess, deleteError, navigate]);
