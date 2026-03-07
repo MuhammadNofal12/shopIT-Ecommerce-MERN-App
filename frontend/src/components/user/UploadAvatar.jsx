@@ -23,7 +23,7 @@ const UploadAvatar = () => {
       toast.error(error?.data?.message);
     }
     if (isSuccess) {
-      toast.success("Avatar Uploaded");
+      // toast.success("Avatar Uploaded");
       navigate("/me/profile");
     }
   }, [error, isSuccess, navigate]);

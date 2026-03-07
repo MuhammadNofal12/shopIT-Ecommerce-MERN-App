@@ -19,7 +19,7 @@ const UpdatePassword = () => {
       toast.error(error?.data?.message);
     }
     if (isSuccess) {
-      toast.success("Password Updated");
+      // toast.success("Password Updated");
       navigate("/me/profile");
     }
   }, [error, isSuccess, navigate]);
