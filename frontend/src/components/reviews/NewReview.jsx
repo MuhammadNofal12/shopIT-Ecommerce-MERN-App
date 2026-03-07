@@ -19,10 +19,10 @@ const NewReview = ({ productId }) => {
 
   useEffect(() => {
     if (error) {
-      toast.error(error?.data?.message);
+      //toast.error(error?.data?.message);
     }
     if (isSuccess) {
-      toast.success("Review Posted");
+      //toast.success("Review Posted");
       setRating(0);
       setComment("");
     }
