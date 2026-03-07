@@ -28,7 +28,7 @@ const UpdateProfile = () => {
       toast.error(error?.data?.message);
     }
     if (isSuccess) {
-      toast.success("User Updated");
+      // toast.success("User Updated");
       navigate("/me/profile");
     }
   }, [user, error, isSuccess, navigate]);
