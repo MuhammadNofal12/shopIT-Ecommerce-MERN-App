@@ -50,7 +50,7 @@ const UpdateProduct = () => {
     }
 
     if (isSuccess) {
-      toast.success("Product updated");
+      // toast.success("Product updated");
       navigate("/admin/products");
     }
   }, [error, isSuccess, data, navigate]);
