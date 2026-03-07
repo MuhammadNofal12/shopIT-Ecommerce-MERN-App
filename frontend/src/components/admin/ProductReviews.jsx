@@ -16,10 +16,8 @@ const ProductReviews = () => {
   const [getProductReviews, { data, isLoading, error }] =
     useLazyGetProductReviewsQuery();
 
-  const [
-    deleteReview,
-    { error: deleteError, isLoading: isDeleteLoading, isSuccess },
-  ] = useDeleteReviewMutation();
+  const [deleteReview, { error: deleteError, isLoading: isDeleteLoading }] =
+    useDeleteReviewMutation();
 
   useEffect(() => {
     if (error) {
@@ -29,10 +27,10 @@ const ProductReviews = () => {
     if (deleteError) {
       toast.error(deleteError?.data?.message);
     }
-    if (isSuccess) {
-      toast.success("Review deleted");
-    }
-  }, [error, deleteError, isSuccess]);
+    // if (isSuccess) {
+    //   toast.success("Review deleted");
+    // }
+  }, [error, deleteError]);
 
   const submitHandler = (e) => {
     e.preventDefault();
