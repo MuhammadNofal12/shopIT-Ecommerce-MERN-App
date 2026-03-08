@@ -144,7 +144,7 @@ export const authApi = createApi({
       },
     }),
     logout: builder.mutation({
-      query: () => ({ url: "/logout", method: "GET" }),
+      query: () => ({ url: "/logout", method: "POST" }),
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;

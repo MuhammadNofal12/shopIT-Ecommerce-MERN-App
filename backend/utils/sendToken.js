@@ -21,21 +21,44 @@
 
 //Create token and save in cookie
 // utils/sendToken.js
+//------------------------------------------------------------
+// const sendToken = (user, statusCode, res) => {
+//   const token = user.getJwtToken();
+
+//   const options = {
+//     httpOnly: true,
+//     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+//     secure: true,
+//     sameSite: "none",
+//     path: "/", // required for logout
+//   };
+
+//   res.status(statusCode).cookie("token", token, options).json({
+//     success: true,
+//     user,
+//     // token,
+//   });
+// };
+
+// export default sendToken;
+//-----------------------------------------------------------------------
 const sendToken = (user, statusCode, res) => {
   const token = user.getJwtToken();
 
   const options = {
     httpOnly: true,
-    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
     secure: true,
     sameSite: "none",
-    path: "/", // required for logout
+    path: "/",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // ✅ cookie life
   };
+
+  const userData = user.toObject();
+  delete userData.password; // ✅ security improvement
 
   res.status(statusCode).cookie("token", token, options).json({
     success: true,
-    user,
-    // token,
+    user: userData,
   });
 };
 
