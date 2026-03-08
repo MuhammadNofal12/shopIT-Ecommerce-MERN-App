@@ -15,10 +15,8 @@ import {
 const ListOrders = () => {
   const { data, isLoading, error } = useGetAdminOrdersQuery();
 
-  const [
-    deleteOrder,
-    { error: deleteError, isLoading: isDeleteLoading, isSuccess },
-  ] = useDeleteOrderMutation();
+  const [deleteOrder, { error: deleteError, isLoading: isDeleteLoading }] =
+    useDeleteOrderMutation();
 
   useEffect(() => {
     if (error) {

@@ -116,7 +116,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [login, { isLoading, error, data }] = useLoginMutation();
+  const [login, { isLoading, error }] = useLoginMutation();
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {

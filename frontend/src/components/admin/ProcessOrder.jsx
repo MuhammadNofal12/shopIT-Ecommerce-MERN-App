@@ -16,7 +16,7 @@ const ProcessOrder = () => {
   const { data } = useOrderDetailsQuery(params?.id);
   const order = data?.order || {};
 
-  const [updateOrder, { error, isSuccess }] = useUpdateOrderMutation();
+  const [updateOrder, { error }] = useUpdateOrderMutation();
 
   const {
     shippingInfo,
