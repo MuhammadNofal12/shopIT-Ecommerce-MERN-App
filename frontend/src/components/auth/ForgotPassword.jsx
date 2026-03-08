@@ -9,8 +9,7 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
-  const [forgotPassword, { isLoading, error, isSuccess }] =
-    useForgotPasswordMutation();
+  const [forgotPassword, { isLoading, error }] = useForgotPasswordMutation();
 
   const { isAuthenticated } = useSelector((state) => state.auth);
 
@@ -25,10 +24,10 @@ const ForgotPassword = () => {
     if (error) {
       toast.error(error?.data?.message);
     }
-    if (isSuccess) {
-      toast.success("Email sent. Please check your inbox");
-    }
-  }, [error, isAuthenticated, isSuccess, navigate]);
+    // if (isSuccess) {
+    //   toast.success("Email sent. Please check your inbox");
+    // }
+  }, [error, isAuthenticated, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();

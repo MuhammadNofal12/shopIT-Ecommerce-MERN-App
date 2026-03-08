@@ -90,30 +90,56 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (body) => ({ url: "/register", method: "POST", body }),
+
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        dispatch(setLoading(true)); // ✔ start loading
+
         try {
           const { data } = await queryFulfilled;
+
           dispatch(setUser(data.user));
           dispatch(setIsAuthenticated(true));
           dispatch(setLoading(false));
-          toast.success("Registration successful!"); // ✅ Add this
+
+          toast.success("Registration successful!");
         } catch (error) {
           dispatch(setLoading(false));
+          toast.error(error?.error?.data?.message || "Registration failed"); // ✔ better error
         }
       },
     }),
+    // login: builder.mutation({
+    //   query: (body) => ({ url: "/login", method: "POST", body }),
+    //   async onQueryStarted(args, { dispatch, queryFulfilled }) {
+    //     try {
+    //       const { data } = await queryFulfilled;
+    //       dispatch(setUser(data.user));
+    //       dispatch(setIsAuthenticated(true));
+    //       dispatch(setLoading(false));
+    //       toast.success("Login successful!"); // ✅ Add this
+    //     } catch (error) {
+    //       dispatch(setLoading(false));
+    //       console.log(error);
+    //     }
+    //   },
+    // }),
     login: builder.mutation({
       query: (body) => ({ url: "/login", method: "POST", body }),
+
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        dispatch(setLoading(true)); // ✔ FIX start loading
+
         try {
           const { data } = await queryFulfilled;
+
           dispatch(setUser(data.user));
           dispatch(setIsAuthenticated(true));
-          dispatch(setLoading(false));
-          toast.success("Login successful!"); // ✅ Add this
+          dispatch(setLoading(false)); // ✔ stop loading
+
+          toast.success("Login successful!");
         } catch (error) {
           dispatch(setLoading(false));
-          console.log(error);
+          toast.error(error?.error?.data?.message || "Login failed"); // ✔ better error
         }
       },
     }),
@@ -122,9 +148,9 @@ export const authApi = createApi({
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
-          dispatch(userApi.util.resetApiState()); // 🔥 clear all cached queries
-          dispatch(setUser(null));
+          dispatch(setUser(null)); // ✔ first clear state
           dispatch(setIsAuthenticated(false));
+          dispatch(userApi.util.resetApiState()); // ✔ then clear cache
           dispatch(setLoading(false));
           toast.success("Logout successful!"); // ✅ Add this
         } catch (error) {
