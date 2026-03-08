@@ -103,9 +103,9 @@
 import React, { useEffect, useState } from "react";
 import { useLoginMutation } from "../../redux/api/authApi";
 import toast from "react-hot-toast";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setIsAuthenticated } from "../../redux/features/userSlice"; // Assuming you are using Redux for state
+//import { setIsAuthenticated } from "../../redux/features/userSlice"; // Assuming you are using Redux for state
 
 import MetaData from "../layout/MetaData";
 
@@ -114,7 +114,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
 
   const [login, { isLoading, error }] = useLoginMutation();
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -128,19 +128,32 @@ const Login = () => {
     }
   }, [error, isAuthenticated, navigate]);
 
-  const submitHandler = (e) => {
+  // const submitHandler = (e) => {
+  //   e.preventDefault();
+
+  //   const loginData = {
+  //     email,
+  //     password,
+  //   };
+  //   login(loginData).then((res) => {
+  //     // If successful login, update the state
+  //     if (res?.data?.user) {
+  //       dispatch(setIsAuthenticated(true)); // Set the user as authenticated in Redux
+  //     }
+  //   });
+  // };
+  const submitHandler = async (e) => {
     e.preventDefault();
 
-    const loginData = {
-      email,
-      password,
-    };
-    login(loginData).then((res) => {
-      // If successful login, update the state
-      if (res?.data?.user) {
-        dispatch(setIsAuthenticated(true)); // Set the user as authenticated in Redux
-      }
-    });
+    try {
+      await login({ email, password }).unwrap();
+
+      // toast.success("Login successful");
+
+      navigate("/");
+    } catch (err) {
+      toast.error(err?.data?.message || "Login failed");
+    }
   };
 
   return (

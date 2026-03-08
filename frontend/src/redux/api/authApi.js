@@ -76,7 +76,7 @@
 //----------------------------------------
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { userApi } from "./userApi";
-import { setUser, setIsAuthenticated, setLoading } from "../features/userSlice";
+import { setUser, setIsAuthenticated } from "../features/userSlice";
 import { toast } from "react-hot-toast";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
@@ -92,18 +92,18 @@ export const authApi = createApi({
       query: (body) => ({ url: "/register", method: "POST", body }),
 
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
-        dispatch(setLoading(true)); // ✔ start loading
+        // dispatch(setLoading(true)); // ✔ start loading
 
         try {
           const { data } = await queryFulfilled;
 
           dispatch(setUser(data.user));
           dispatch(setIsAuthenticated(true));
-          dispatch(setLoading(false));
+          // dispatch(setLoading(false));
 
           toast.success("Registration successful!");
         } catch (error) {
-          dispatch(setLoading(false));
+          //   dispatch(setLoading(false));
           toast.error(error?.error?.data?.message || "Registration failed"); // ✔ better error
         }
       },
@@ -127,35 +127,42 @@ export const authApi = createApi({
       query: (body) => ({ url: "/login", method: "POST", body }),
 
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
-        dispatch(setLoading(true)); // ✔ FIX start loading
+        //  dispatch(setLoading(true)); // ✔ FIX start loading
 
         try {
           const { data } = await queryFulfilled;
 
           dispatch(setUser(data.user));
           dispatch(setIsAuthenticated(true));
-          dispatch(setLoading(false)); // ✔ stop loading
+          //    dispatch(setLoading(false)); // ✔ stop loading
 
           toast.success("Login successful!");
         } catch (error) {
-          dispatch(setLoading(false));
+          //   dispatch(setLoading(false));
           toast.error(error?.error?.data?.message || "Login failed"); // ✔ better error
         }
       },
     }),
     logout: builder.mutation({
-      query: () => ({ url: "/logout", method: "POST" }),
+      query: () => ({
+        url: "/logout",
+        method: "POST",
+        credentials: "include",
+      }),
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
-          dispatch(setUser(null)); // ✔ first clear state
+          // dispatch(setUser(null)); // ✔ first clear state
+          // dispatch(setIsAuthenticated(false));
+          // dispatch(userApi.util.resetApiState()); // ✔ then clear cache
+          dispatch(userApi.util.resetApiState());
+          dispatch(setUser(null));
           dispatch(setIsAuthenticated(false));
-          dispatch(userApi.util.resetApiState()); // ✔ then clear cache
-          dispatch(setLoading(false));
+          // dispatch(setLoading(false));
           toast.success("Logout successful!"); // ✅ Add this
         } catch (error) {
           console.log(error);
-          dispatch(setLoading(false));
+          // dispatch(setLoading(false));
           toast.error(error?.data?.message || "Something went wrong"); // ✅ Add this
         }
       },
