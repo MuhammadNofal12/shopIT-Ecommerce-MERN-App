@@ -98,35 +98,130 @@ export const uploadAvatar = catchAsyncErrors(async (req, res, next) => {
 });
 
 //Forgot password => /api/v1/password/forgot
+// export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
+//   //Find User in Database
+//   const user = await User.findOne({ email: req.body.email });
+
+//   if (!user) {
+//     return next(new ErrorHandler("User not found with this email", 404));
+//   }
+
+//   //Get reset password token
+//   const resetToken = user.getResetPasswordToken();
+
+//   await user.save({ validateBeforeSave: false });
+
+//   //create reset password url
+//   const resetUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`;
+
+//   const message = getResetPasswordTemplate(user?.name, resetUrl);
+
+//   try {
+//     await sendEmail({
+//       email: user.email,
+//       subject: "ShopIT Password Recovery",
+//       message,
+//     });
+
+//     res.status(200).json({
+//       message: `Email sent to: ${user.email}`,
+//     });
+//   } catch (error) {
+//     user.resetPasswordToken = undefined;
+//     user.resetPasswordExpire = undefined;
+
+//     await user.save({ validateBeforeSave: false });
+
+//     return next(new ErrorHandler(error?.message, 500));
+//   }
+// });
+
+// // Reset password =>/api/v1/password/reset/:token
+// export const resetPassword = catchAsyncErrors(async (req, res, next) => {
+//   //Hash the URL Token
+//   const resetPasswordToken = crypto
+//     .createHash("sha256")
+//     .update(req.params.token)
+//     .digest("hex");
+
+//   const user = await User.findOne({
+//     resetPasswordToken,
+//     resetPasswordExpire: { $gt: Date.now() },
+//   });
+
+//   if (!user) {
+//     return next(
+//       new ErrorHandler(
+//         "Password reset token is invalid or has been expired",
+//         400,
+//       ),
+//     );
+//   }
+//   if (req.body.password !== req.body.confirmPassword) {
+//     return next(new ErrorHandler("Passwords does not match", 400));
+//   }
+
+//   //Set new password
+//   user.password = req.body.password;
+
+//   user.resetPasswordToken = undefined;
+//   user.resetPasswordExpire = undefined;
+
+//   await user.save({ validateBeforeSave: false });
+
+//   sendToken(user, 200, res);
+// });
+
+//Forgot password => /api/v1/password/forgot
 export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
-  //Find User in Database
+  // ✅ Step 1: Find User in Database
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
     return next(new ErrorHandler("User not found with this email", 404));
   }
 
-  //Get reset password token
+  // ✅ Step 2: Generate reset password token
   const resetToken = user.getResetPasswordToken();
 
+  // Save token in DB without running validators
   await user.save({ validateBeforeSave: false });
 
-  //create reset password url
+  // ✅ Step 3: Create reset password URL (frontend page)
   const resetUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`;
 
   const message = getResetPasswordTemplate(user?.name, resetUrl);
 
   try {
+    // ✅ DEBUG: Check if environment variables are loading correctly
+    console.log("SMTP_HOST:", process.env.SMTP_HOST);
+    console.log("SMTP_PORT:", process.env.SMTP_PORT);
+    console.log("SMTP_EMAIL:", process.env.SMTP_EMAIL);
+    console.log(
+      "SMTP_PASSWORD:",
+      process.env.SMTP_PASSWORD ? "Loaded ✅" : "Missing ❌",
+    );
+
+    // ✅ DEBUG: Check email target
+    console.log("Sending reset email to:", user.email);
+
+    // ✅ Step 4: Send Email
     await sendEmail({
       email: user.email,
       subject: "ShopIT Password Recovery",
       message,
     });
 
+    console.log("Email sent successfully ✅");
+
     res.status(200).json({
       message: `Email sent to: ${user.email}`,
     });
   } catch (error) {
+    console.log("Email sending failed ❌");
+    console.log(error);
+
+    // Reset token fields if email fails
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
 
@@ -136,14 +231,15 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
   }
 });
 
-// Reset password =>/api/v1/password/reset/:token
+// Reset password => /api/v1/password/reset/:token
 export const resetPassword = catchAsyncErrors(async (req, res, next) => {
-  //Hash the URL Token
+  // ✅ Step 1: Hash token from URL
   const resetPasswordToken = crypto
     .createHash("sha256")
     .update(req.params.token)
     .digest("hex");
 
+  // ✅ Step 2: Find user with valid token
   const user = await User.findOne({
     resetPasswordToken,
     resetPasswordExpire: { $gt: Date.now() },
@@ -157,17 +253,21 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
       ),
     );
   }
+
+  // ✅ Step 3: Check passwords match
   if (req.body.password !== req.body.confirmPassword) {
     return next(new ErrorHandler("Passwords does not match", 400));
   }
 
-  //Set new password
+  // ✅ Step 4: Set new password
   user.password = req.body.password;
 
   user.resetPasswordToken = undefined;
   user.resetPasswordExpire = undefined;
 
   await user.save({ validateBeforeSave: false });
+
+  console.log("Password reset successful for:", user.email); // ✅ Debug log
 
   sendToken(user, 200, res);
 });

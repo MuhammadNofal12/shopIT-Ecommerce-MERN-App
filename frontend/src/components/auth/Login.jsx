@@ -126,7 +126,7 @@ const Login = () => {
     if (error) {
       toast.error(error?.data?.message);
     }
-  }, [error, isAuthenticated]);
+  }, [error, isAuthenticated, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
