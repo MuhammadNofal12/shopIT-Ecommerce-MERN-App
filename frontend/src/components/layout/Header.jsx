@@ -14,10 +14,12 @@ const Header = () => {
   // console.log("LOGOUT=>", data);
   // console.log("===================================");
 
-  const { user } = useSelector((state) => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  //const { user } = useSelector((state) => state.auth);
 
   const { isLoading } = useGetMeQuery(null, {
-    skip: !user, // only fetch if user exists
+    skip: !isAuthenticated,
+    //skip: !user, // only fetch if user exists
     refetchOnMountOrArgChange: true,
   });
 
