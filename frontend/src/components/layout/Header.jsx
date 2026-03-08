@@ -18,6 +18,7 @@ const Header = () => {
 
   const { isLoading } = useGetMeQuery(null, {
     skip: !user, // only fetch if user exists
+    refetchOnMountOrArgChange: true,
   });
 
   const { cartItems } = useSelector((state) => state.cart);
@@ -32,7 +33,7 @@ const Header = () => {
       // Reset RTK Query cache
       dispatch(userApi.util.resetApiState());
 
-      navigate("/login");
+      navigate("/");
     } catch (err) {
       console.log(err);
     }
