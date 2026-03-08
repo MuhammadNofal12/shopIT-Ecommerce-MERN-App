@@ -149,21 +149,22 @@ export const authApi = createApi({
         method: "POST",
         credentials: "include",
       }),
+
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
-          // dispatch(setUser(null)); // ✔ first clear state
-          // dispatch(setIsAuthenticated(false));
-          // dispatch(userApi.util.resetApiState()); // ✔ then clear cache
+
+          // reset ALL RTK queries first
+          dispatch(authApi.util.resetApiState());
           dispatch(userApi.util.resetApiState());
+
+          // then clear redux state
           dispatch(setUser(null));
           dispatch(setIsAuthenticated(false));
-          // dispatch(setLoading(false));
-          toast.success("Logout successful!"); // ✅ Add this
+
+          toast.success("Logout successful!");
         } catch (error) {
-          console.log(error);
-          // dispatch(setLoading(false));
-          toast.error(error?.data?.message || "Something went wrong"); // ✅ Add this
+          toast.error(error?.data?.message || "Something went wrong");
         }
       },
     }),
