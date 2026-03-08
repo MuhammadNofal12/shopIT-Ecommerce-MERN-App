@@ -18,20 +18,41 @@ const ResetPassword = () => {
 
   const { isAuthenticated } = useSelector((state) => state.auth);
 
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     navigate("/");
+  //   }
+  //   if (error) {
+  //     toast.error(error?.data?.message);
+  //   }
+  //   if (isSuccess) {
+  //     toast.success("Password reset successfully");
+  //     navigate("/login");
+  //   }
+  // }, [error, isAuthenticated, isSuccess, navigate]);
+
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/");
     }
+
     if (error) {
       toast.error(error?.data?.message);
     }
-    if (isSuccess) {
-      toast.success("Password reset successfully");
-      navigate("/login");
-    }
-  }, [error, isAuthenticated, isSuccess, navigate]);
+  }, [error, isAuthenticated, navigate]);
 
-  const submitHandler = (e) => {
+  // const submitHandler = (e) => {
+  //   e.preventDefault();
+
+  //   if (password !== confirmPassword) {
+  //     return toast.error("Password does not match. Try again");
+  //   }
+
+  //   const data = { password, confirmPassword };
+
+  //   resetPassword({ token: params?.token, body: data });
+  // };
+  const submitHandler = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -40,7 +61,19 @@ const ResetPassword = () => {
 
     const data = { password, confirmPassword };
 
-    resetPassword({ token: params?.token, body: data });
+    try {
+      const res = await resetPassword({
+        token: params?.token,
+        body: data,
+      }).unwrap();
+
+      if (res?.success) {
+        toast.success("Password reset successfully");
+        navigate("/login"); // ✅ guaranteed redirect
+      }
+    } catch (err) {
+      toast.error(err?.data?.message || "Something went wrong");
+    }
   };
 
   return (
