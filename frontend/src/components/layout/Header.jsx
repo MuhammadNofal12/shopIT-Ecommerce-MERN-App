@@ -4,7 +4,7 @@ import { useGetMeQuery, userApi } from "../../redux/api/userApi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../../redux/api/authApi";
-import { logoutSuccess } from "../../redux/features/userSlice";
+//import { logoutSuccess } from "../../redux/features/userSlice";
 
 const Header = () => {
   const navigate = useNavigate();
