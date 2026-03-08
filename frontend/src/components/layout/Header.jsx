@@ -25,15 +25,15 @@ const Header = () => {
 
   const { cartItems } = useSelector((state) => state.cart);
 
-  const dispatch = useDispatch();
+  //  const dispatch = useDispatch();
 
   const logoutHandler = async () => {
     try {
       await logout().unwrap();
-      dispatch(logoutSuccess());
+      //   dispatch(logoutSuccess());
 
       // Reset RTK Query cache
-      dispatch(userApi.util.resetApiState());
+      //   dispatch(userApi.util.resetApiState());
 
       navigate("/");
     } catch (err) {
@@ -122,12 +122,15 @@ const Header = () => {
             </div>
           </div>
         ) : (
-          !isLoading && (
-            <Link to="/login" className="btn ms-4" id="login_btn">
-              {" "}
-              Login{" "}
-            </Link>
-          )
+          // !isLoading && (
+          //   <Link to="/login" className="btn ms-4" id="login_btn">
+          //     {" "}
+          //     Login{" "}
+          //   </Link>
+          // )
+          <Link to="/login" className="btn ms-4" id="login_btn">
+            Login
+          </Link>
         )}
       </div>
     </nav>
