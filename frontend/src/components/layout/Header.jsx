@@ -4,7 +4,7 @@ import { useGetMeQuery, userApi } from "../../redux/api/userApi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../../redux/api/authApi";
-//import { logoutSuccess } from "../../redux/features/userSlice";
+import { logoutSuccess } from "../../redux/features/userSlice";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -16,11 +16,9 @@ const Header = () => {
 
   const { user } = useSelector((state) => state.auth);
 
-  // const { isLoading } = useGetMeQuery(null, {
-  //   skip: !user, // only fetch if user exists
-  // });
-
-  const { isLoading } = useGetMeQuery();
+  const { isLoading } = useGetMeQuery(null, {
+    skip: !user, // only fetch if user exists
+  });
 
   const { cartItems } = useSelector((state) => state.cart);
 
@@ -29,12 +27,12 @@ const Header = () => {
   const logoutHandler = async () => {
     try {
       await logout().unwrap();
-      // dispatch(logoutSuccess());
+      dispatch(logoutSuccess());
 
       // Reset RTK Query cache
       dispatch(userApi.util.resetApiState());
 
-      navigate("/");
+      navigate("/login");
     } catch (err) {
       console.log(err);
     }
