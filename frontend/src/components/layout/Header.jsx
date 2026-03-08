@@ -14,7 +14,7 @@ const Header = () => {
   // console.log("LOGOUT=>", data);
   // console.log("===================================");
 
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   //const { user } = useSelector((state) => state.auth);
 
   const { isLoading } = useGetMeQuery(null, {
