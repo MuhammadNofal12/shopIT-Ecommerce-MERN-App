@@ -16,9 +16,11 @@ const Header = () => {
 
   const { user } = useSelector((state) => state.auth);
 
-  const { isLoading } = useGetMeQuery(null, {
-    skip: !user, // only fetch if user exists
-  });
+  // const { isLoading } = useGetMeQuery(null, {
+  //   skip: !user, // only fetch if user exists
+  // });
+
+  const { isLoading } = useGetMeQuery();
 
   const { cartItems } = useSelector((state) => state.cart);
 
@@ -27,7 +29,7 @@ const Header = () => {
   const logoutHandler = async () => {
     try {
       await logout().unwrap();
-      dispatch(logoutSuccess());
+      // dispatch(logoutSuccess());
 
       // Reset RTK Query cache
       dispatch(userApi.util.resetApiState());
@@ -41,16 +43,16 @@ const Header = () => {
     <nav className="navbar row">
       <div className="col-12 col-md-3 ps-5">
         <div className="navbar-brand">
-          <a href="/">
+          <Link to="/">
             <img src="/images/shopit_logo.png" alt="ShopIT Logo" />
-          </a>
+          </Link>
         </div>
       </div>
       <div className="col-12 col-md-6 mt-2 mt-md-0">
         <Search />
       </div>
       <div className="col-12 col-md-3 mt-4 mt-md-0 text-center">
-        <a href="/cart" style={{ textDecoration: "none" }}>
+        <Link to="/cart" style={{ textDecoration: "none" }}>
           <span id="cart" className="ms-3">
             {" "}
             Cart{" "}
@@ -58,7 +60,7 @@ const Header = () => {
           <span className="ms-1" id="cart_count">
             {cartItems?.length}
           </span>
-        </a>
+        </Link>
         {user ? (
           <div className="ms-4 dropdown">
             <button
