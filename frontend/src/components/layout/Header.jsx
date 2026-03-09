@@ -35,7 +35,7 @@ const Header = () => {
       // Reset RTK Query cache
       //   dispatch(userApi.util.resetApiState());
 
-      navigate("/");
+      navigate("/", { replace: true });
     } catch (err) {
       console.log(err);
     }
