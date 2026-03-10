@@ -292,9 +292,11 @@ export const updatePassword = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Old Password is incorrect", 400));
   }
   user.password = req.body.password;
-  user.save();
+  await user.save();
 
-  res.status(200).json({ success: true });
+  res
+    .status(200)
+    .json({ success: true, message: "Password updated successfully!" });
 });
 
 // Update User Profile => /api/v1/me/update
