@@ -13,12 +13,12 @@ import NotFound from "./components/layout/NotFound";
 
 import { useLazyGetMeQuery } from "./redux/api/userApi";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import {
-  setUser,
-  setIsAuthenticated,
-  setLoading,
-} from "./redux/features/userSlice";
+//import { useDispatch } from "react-redux";
+// import {
+//   setUser,
+//   setIsAuthenticated,
+//   setLoading,
+// } from "./redux/features/userSlice";
 import { API_BASE_URL } from "./constants/api";
 //import UserRoutes from "./components/routes/UserRoutes.jsx";
 //import AdminRoutes from "./components/routes/AdminRoutes.jsx";
@@ -28,35 +28,15 @@ import { API_BASE_URL } from "./constants/api";
 console.log("API URL:", API_BASE_URL);
 
 function App() {
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
   const [getMe] = useLazyGetMeQuery();
 
   // App.js
+
   useEffect(() => {
-    let isMounted = true; // Prevents state updates on unmounted components
-
-    dispatch(setLoading(true));
-    getMe()
-      .unwrap()
-      .then((data) => {
-        if (isMounted) {
-          dispatch(setUser(data));
-          dispatch(setIsAuthenticated(true));
-          dispatch(setLoading(false));
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          dispatch(setLoading(false));
-          dispatch(setIsAuthenticated(false));
-          dispatch(setUser(null));
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    }; // Cleanup
-  }, [getMe, dispatch]);
+    getMe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const userRoutes = useUserRoutes();
   const adminRoutes = useAdminRoutes();

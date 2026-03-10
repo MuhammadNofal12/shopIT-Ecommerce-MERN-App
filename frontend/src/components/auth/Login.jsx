@@ -104,7 +104,7 @@ import React, { useEffect, useState } from "react";
 import { useLoginMutation } from "../../redux/api/authApi";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 //import { setIsAuthenticated } from "../../redux/features/userSlice"; // Assuming you are using Redux for state
 
 import MetaData from "../layout/MetaData";
@@ -144,6 +144,8 @@ const Login = () => {
   // };
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    console.log("LOGIN SUBMIT");
 
     try {
       await login({ email, password }).unwrap();
@@ -191,9 +193,9 @@ const Login = () => {
               />
             </div>
 
-            <a href="/password/forgot" className="float-end mb-4">
+            <Link to="/password/forgot" className="float-end mb-4">
               Forgot Password?
-            </a>
+            </Link>
 
             <button
               id="login_button"
@@ -205,9 +207,9 @@ const Login = () => {
             </button>
 
             <div className="my-3">
-              <a href="/register" className="float-end">
+              <Link to="/register" className="float-end">
                 New User?
-              </a>
+              </Link>
             </div>
           </form>
         </div>
