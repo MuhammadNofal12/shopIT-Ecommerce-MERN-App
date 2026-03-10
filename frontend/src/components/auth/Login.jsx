@@ -123,10 +123,10 @@ const Login = () => {
     if (isAuthenticated) {
       navigate("/"); // Redirect if already authenticated
     }
-    if (error) {
-      toast.error(error?.data?.message);
-    }
-  }, [error, isAuthenticated, navigate]);
+    // if (error) {
+    //   toast.error(error?.data?.message);
+    // }
+  }, [isAuthenticated, navigate]);
 
   // const submitHandler = (e) => {
   //   e.preventDefault();
@@ -154,7 +154,10 @@ const Login = () => {
 
       navigate("/");
     } catch (err) {
-      toast.error(err?.data?.message || "Login failed");
+      toast.error(err?.data?.message || "Invalid email or password");
+      setPassword("");
+
+      document.getElementById("password_field").focus();
     }
   };
 
