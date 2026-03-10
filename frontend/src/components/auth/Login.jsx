@@ -154,6 +154,7 @@ const Login = () => {
 
       navigate("/");
     } catch (err) {
+      toast.dismiss();
       toast.error(err?.data?.message || "Invalid email or password");
       setPassword("");
 
