@@ -35,19 +35,24 @@ export default (err, req, res, next) => {
     error = new ErrorHandler(message, 400);
   }
 
-  if (process.env.NODE_ENV === "DEVELOPMENT") {
-    res.status(error.statusCode).json({
-      message: error.message,
-      error: err,
-      stack: err?.stack,
-    });
-  }
+  res.status(error.statusCode).json({
+    success: false,
+    message: error.message,
+  });
 
-  if (process.env.NODE_ENV === "PRODUCTION") {
-    res.status(error.statusCode).json({
-      message: error.message,
-    });
-  }
+  // if (process.env.NODE_ENV === "DEVELOPMENT") {
+  //   res.status(error.statusCode).json({
+  //     message: error.message,
+  //     error: err,
+  //     stack: err?.stack,
+  //   });
+  // }
+
+  // if (process.env.NODE_ENV === "PRODUCTION") {
+  //   res.status(error.statusCode).json({
+  //     message: error.message,
+  //   });
+  // }
 };
 
 // export default (err, req, res, next) => {
