@@ -155,8 +155,8 @@ export const authApi = createApi({
           await queryFulfilled;
 
           // reset ALL RTK queries first
-          dispatch(authApi.util.resetApiState());
-          //    dispatch(userApi.util.resetApiState());
+          //dispatch(authApi.util.resetApiState());
+          dispatch(userApi.util.resetApiState());
 
           // then clear redux state
           dispatch(setUser(null));
