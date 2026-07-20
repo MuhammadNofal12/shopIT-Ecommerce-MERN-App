@@ -13,22 +13,11 @@ import NotFound from "./components/layout/NotFound";
 
 import { useLazyGetMeQuery } from "./redux/api/userApi";
 import { useEffect } from "react";
-//import { useDispatch } from "react-redux";
-// import {
-//   setUser,
-//   setIsAuthenticated,
-//   setLoading,
-// } from "./redux/features/userSlice";
 import { API_BASE_URL } from "./constants/api";
-//import UserRoutes from "./components/routes/UserRoutes.jsx";
-//import AdminRoutes from "./components/routes/AdminRoutes.jsx";
-//import UserRoutes from "./components/routes/userRoutes.jsx";
-//import AdminRoutes from "./components/routes/adminRoutes.jsx";
 
 console.log("API URL:", API_BASE_URL);
 
 function App() {
-  //const dispatch = useDispatch();
   const [getMe] = useLazyGetMeQuery();
 
   // App.js

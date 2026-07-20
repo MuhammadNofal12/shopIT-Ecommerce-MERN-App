@@ -10,9 +10,6 @@ const Header = () => {
   const navigate = useNavigate();
 
   const [logout] = useLogoutMutation();
-  // console.log("===================================");
-  // console.log("LOGOUT=>", data);
-  // console.log("===================================");
 
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   //const { user } = useSelector((state) => state.auth);

@@ -117,8 +117,9 @@ const userRoutes = () => {
       <Route
         path="/order-success"
         element={
-          // <ProtectedRoute>
-          <OrderSuccess />
+          <ProtectedRoute>
+            <OrderSuccess />
+          </ProtectedRoute>
         }
       />
 
